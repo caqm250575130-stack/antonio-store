@@ -1,0 +1,401 @@
+/* Estilos Generales y Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    /* El fondo de toda la página ahora será un Wallpaper */
+    background-image: url('Wallpaper.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Esto hace que el fondo se quede fijo al hacer scroll, se ve chivo */
+    background-repeat: no-repeat;
+    
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 20px;
+    position: relative;
+    border-bottom: none !important;
+}
+
+/* Contenedor flexible para alinear el logo a la izquierda y centrar el texto */
+/* Contenedor flexible del encabezado */
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Espacio izquierdo para el logo */
+/* El espacio reservado para los lados para darle más aire al centro */
+.logo-container {
+    flex-basis: 320px; /* Espacio del logo */
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 15px;
+}
+
+.services-container {
+    flex-basis: 220px; /* Se mantiene igual que el logo para que el texto siga centrado */
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px;
+}
+
+/* Tamaño real de la imagen del logo */
+.store-logo {
+    max-width: 100%;
+    height: auto;
+    
+    /* AJUSTE: Subí a 175px para el tamaño ideal intermedio */
+    max-height: 175px; 
+    
+    object-fit: contain;
+    transform: scale(1);
+}
+
+/* Texto central */
+.header-text {
+    flex-grow: 1;
+    text-align: center;
+    margin-right: 0; /* flex-basis iguales a los lados */
+}
+
+/* --- ESTILO DEL BOTÓN AZUL NEÓN --- */
+.btn-services {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: transparent;
+    color: #0084ff; /* Color del neón */
+    border: 2px solid #0084ff;
+    transition: all 0.4s ease; /* Transición suave para el encendido del brillo */
+    white-space: nowrap; /* Evita que el texto se rompa en dos líneas */
+}
+
+/* Efecto de encendido al apuntar con el mouse */
+.btn-services:hover {
+    background-color: #00d2ff;
+    color: #111; /* Texto oscuro para máxima legibilidad sobre el fondo brillante */
+    box-shadow: 0 0 10px #00d2ff, 0 0 30px #00d2ff, inset 0 0 10px #00d2ff;
+    text-shadow: 0 0 2px #fff;
+    transform: translateY(-2px); /* Pequeño salto interactivo hacia arriba */
+}
+
+header h1 {
+    font-size: 2.8rem;
+    margin-bottom: 5px;
+}
+
+header .slogan {
+    color: #aaa;
+    font-size: 1.1rem;
+}
+
+/* Para mantener el Arcoíris Noventero en su posición original abajo */
+header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    display: block;
+    background: linear-gradient(to right, 
+        #ff0000 0%, #ff0000 16.6%, 
+        #ff7f00 16.6%, #ff7f00 33.2%, 
+        #ffff00 33.2%, #ffff00 49.8%, 
+        #00ff00 49.8%, #00ff00 66.4%, 
+        #0000ff 66.4%, #0000ff 83%, 
+        #8b00ff 83%, #8b00ff 100%
+    );
+    z-index: 10;
+}
+
+/* Ajuste responsivo: En celulares el logo se acomodará arriba y el texto abajo */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .logo-container {
+        justify-content: center;
+        flex-basis: auto;
+    }
+    .header-text {
+        margin-right: 0;
+    }
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+header .slogan {
+    font-size: 1rem;
+    color: #cccccc;
+    font-style: italic;
+}
+
+/* Sección de Búsqueda */
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin: 25px 20px;
+}
+
+#search-input {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#search-input:focus {
+    border-color: #04aa0c;
+    /* Efecto neón suave: una capa difuminada interna y una brillante externa */
+    box-shadow: 0 0 8px #04aa0c, 
+                0 0 20px rgba(4, 170, 12, 0.4), 
+                inset 0 0 5px rgba(4, 170, 12, 0.2);
+    /* Transición para que el encendido del neón no sea brusco */
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 1. Contenedor del Catálogo: Caja Flexible (Flexbox) */
+.catalog-container {
+    max-width: 95%; /* Se estira ocupando casi toda la pantalla disponible */
+    margin: 40px auto;
+    padding: 10px;
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;       /* Si ya no caben por el zoom, saltan abajo */
+    justify-content: center; /* Mantiene las tarjetas centradas */
+    gap: 25px;             /* Separación fija entre tarjetas */
+    
+    flex: 1;
+}
+
+/* 2. Tarjetas de Producto: 100% Proporcionales al Zoom */
+.product-card {
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    
+    display: flex;
+    flex-direction: column;
+
+    /* CLAVE DEL ZOOM: 
+       Usa porcentajes dinámicos en base a cuántas quieres ver por fila en pantalla normal.
+       - 'calc(25% - 25px)' intentará poner siempre 4 tarjetas por fila.
+       - Al alterar el zoom (25%, 50%, 200%), el porcentaje se recalcula respecto al tamaño visual. */
+    flex: 1 1 calc(25% - 25px); 
+    
+    /* Se ponen límites mínimos y máximos para que no pierdan la forma de tarjeta */
+    min-width: 260px;  /* Evita que se hagan muy delgadas */
+    max-width: 400px;  /* Evita que se deformen hacia lo ancho */
+}
+
+/* 3. Contenedor de la Imagen Elástico */
+.image-container {
+    width: 100%;        
+    height: 380px;     
+    position: relative;
+    background-color: #111111;
+    background-image: url('Agotado.png'); 
+    background-size: cover;
+    background-position: center;
+    margin: 0 auto;     
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Vuelvo al estilo anterior para cubrir todo el contenedor */
+.product-image {
+    width: 100%;
+    height: 100%;
+    
+    /* Regresa a cover para expandirse y tapar por completo el fondo */
+    object-fit: cover; 
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+/* Lógica de Superposición limpia: 
+   Si el atributo 'src' está vacío o no existe, la imagen se oculta por completo 
+   para garantizar que no aparezca el icono de "imagen rota" del navegador */
+.product-image:not([src]), 
+.product-image[src=""] {
+    display: none;
+}
+
+/* Información del Producto */
+.product-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.product-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.product-info .category {
+    font-size: 0.9rem;
+    color: #e0e0e0;        
+;
+    margin-bottom: 10px;
+}
+
+.features-list {
+    list-style-type: disc; /* Muestra los puntitos negros tradicionales */
+    padding-left: 20px;    /* Espacio para que salgan los puntos correctamente */
+    
+    /* SOLUCIÓN: Cambié a un color claro para que resalte en el fondo oscuro */
+    color: #e0e0e0;        
+    
+    font-size: 0.9rem;
+}
+
+.features-list li {
+    margin-bottom: 3px;    /* Separación sutil entre cada punto */
+    
+    /* Me aseguro que herede el color claro y se lea perfectamente */
+    color: #e0e0e0;        
+}
+
+.product-info .price {
+    font-size: 1.4rem;
+    color: #1fbb44;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Botón de Compra por WhatsApp */
+.btn-buy {
+    display: block;
+    text-align: center;
+    background-color: #25d366;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-buy:hover {
+    background-color: #1ebd58;
+}
+
+/* ==========================================
+   PIE DE PÁGINA CON EFECTO NEÓN
+   ========================================== */
+
+footer {
+    background-color: rgba(17, 17, 17, 0.9); /* Un fondo negro semi-transparente para que luzca el Wallpaper de fondo */
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 50px;
+    border-top: 2px solid #222;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Estilo Base del Marco para cada Red Social */
+.social-icon {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 8px; /* Esquinas ligeramente redondeadas para el marco */
+    background: transparent;
+    transition: all 0.4s ease; /* Transición suave para el encendido del neón */
+}
+
+/* --- EFECTOS NEÓN INDIVIDUALES (AL PASAR EL MOUSE) --- */
+
+/* 1. WhatsApp: Verde Neón */
+.social-icon.whatsapp {
+    color: #25d366;
+    border: 2px solid #25d366;
+}
+.social-icon.whatsapp:hover {
+    background-color: #25d366;
+    color: #fff;
+    /* Sombras externas e internas para simular el brillo del tubo de neón */
+    box-shadow: 0 0 10px #25d366, 0 0 30px #25d366, inset 0 0 10px #25d366;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* 2. Instagram: Rosa/Magenta Neón */
+.social-icon.instagram {
+    color: #e1306c;
+    border: 2px solid #e1306c;
+}
+.social-icon.instagram:hover {
+    background-color: #e1306c;
+    color: #fff;
+    box-shadow: 0 0 10px #e1306c, 0 0 30px #e1306c, inset 0 0 10px #e1306c;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* 3. TikTok: Cyan/Celeste Eléctrico (Color característico de su logo) */
+.social-icon.tiktok {
+    color: #25F4EE;
+    border: 2px solid #25F4EE;
+}
+.social-icon.tiktok:hover {
+    background-color: #25F4EE;
+    color: #111; /* Texto oscuro para que resalte sobre el cyan brillante */
+    box-shadow: 0 0 10px #25F4EE, 0 0 30px #25F4EE, inset 0 0 10px #25F4EE;
+    text-shadow: 0 0 2px #fff;
+}
