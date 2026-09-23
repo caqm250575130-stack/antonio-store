@@ -511,8 +511,35 @@ function descargarIndexPublicado(){
   try { categoriasOcultas = JSON.parse(localStorage.getItem(CLAVE_CAT_OCULTAS)) || []; } catch(e){}
 
   const datos = { categorias, categoriasOcultas, fondo };
-  const indexActual = document.documentElement.outerHTML;
-  const html = indexActual
+
+  /*
+     IMPORTANTE:
+     La descarga debe representar SIEMPRE una tienda recién iniciada.
+     Si el administrador descarga el index mientras el panel está abierto,
+     outerHTML conservaría la clase "visible" y el modal bloquearía toda
+     la tienda (incluidas las categorías) al abrir el archivo descargado.
+     Por eso trabajamos sobre una copia del DOM y limpiamos cualquier estado
+     visual temporal antes de generar el archivo.
+  */
+  const clon = document.documentElement.cloneNode(true);
+
+  // El panel de administrador y el modal de contraseña comienzan cerrados.
+  clon.querySelectorAll('#modalPassFondo, #modalAdminFondo').forEach(modal => {
+    modal.classList.remove('visible');
+    modal.hidden = false;
+  });
+
+  // En móvil, las categorías comienzan cerradas; en escritorio no afecta.
+  const panelCategoriasDescarga = clon.querySelector('#panelCategorias');
+  if(panelCategoriasDescarga) panelCategoriasDescarga.classList.remove('abierta');
+
+  const fondoMenuDescarga = clon.querySelector('#fondoMenu');
+  if(fondoMenuDescarga) fondoMenuDescarga.classList.remove('visible');
+
+  const btnMenuDescarga = clon.querySelector('#btnMenu');
+  if(btnMenuDescarga) btnMenuDescarga.setAttribute('aria-expanded', 'false');
+
+  const html = clon.outerHTML
     .replace(/<script id="catalogoPublicado" type="application\/json">[\s\S]*?<\/script>/,
       '<script id="catalogoPublicado" type="application/json">' + escaparHTMLScript(catalogo) + '<\\/script>')
     .replace(/<script id="datosPublicados" type="application\/json">[\s\S]*?<\/script>/,
