@@ -551,16 +551,28 @@ function dibujarListaAdmin(){
 
     const acciones = document.createElement('div');
     acciones.className = 'acciones';
+    const estaPublicado = p.publicado !== false;
     const btnPublicar = crearBoton(
-      p.publicado === false ? 'Publicar' : 'Publicado ✓',
+      estaPublicado ? 'Publicado ✓' : 'Publicar en index',
       async () => {
         const cat = obtenerCatalogo();
         const prod = cat.find(x => x.id === p.id);
-        if(prod) prod.publicado = prod.publicado === false;
-        await aplicarCambios(cat);
+        if(!prod) return;
+
+        prod.publicado = !estaPublicado;
+        const ok = await aplicarCambios(cat);
+        if(!ok) return;
+
+        // Genera inmediatamente un nuevo index.html con el estado actualizado.
+        // Así, al publicar/despublicar un producto, el archivo que se suba al
+        // hosting queda sincronizado con lo que muestra el panel.
+        descargarIndexPublicado();
       }
     );
-    btnPublicar.className = p.publicado === false ? 'btn-publicar' : 'btn-publicado';
+    btnPublicar.className = estaPublicado ? 'btn-publicado' : 'btn-publicar';
+    btnPublicar.title = estaPublicado
+      ? 'Quitar este producto del index público y descargar el index actualizado'
+      : 'Publicar este producto en el index y descargar el index actualizado';
 
     const btnEstado = crearBoton(p.agotado ? 'Disponible' : 'Agotado', async () => {
       const cat = obtenerCatalogo();
