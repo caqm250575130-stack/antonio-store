@@ -20,6 +20,10 @@ const CALIDAD    = 0.82;  // calidad de compresión (0 a 1)
 /* ---------- Atajos a los elementos del HTML ---------- */
 const $ = id => document.getElementById(id);
 
+// Se conserva una copia del HTML actual para poder generar un index.html
+// completo desde el navegador sin depender de un servidor.
+const indexOriginalParaPublicar = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
 const btnAdmin      = $('btnAdmin');
 const modalPass     = $('modalPassFondo');
 const campoPass     = $('campoPass');
@@ -52,9 +56,11 @@ const campoFondoAdmin    = $('campoFondoAdmin');
 const previaFondoAdmin   = $('previaFondoAdmin');
 const btnGuardarFondo    = $('btnGuardarFondo');
 const btnRestablecerFondo = $('btnRestablecerFondo');
+const btnGuardarIndex     = $('btnGuardarIndex');
+const estadoGuardarIndex  = $('estadoGuardarIndex');
 let fondoNuevo = ''; // imagen de fondo recién elegida, pendiente de guardar
 
-let sesionAbierta = false;  // evita pedir la contraseña dos veces por visita
+let sesionAbierta = false;  // solo dura mientras el panel actual está abierto
 let imagenActual  = '';     // foto (en base64) del producto que se está editando
 
 /* ============================================================
@@ -258,6 +264,10 @@ btnRestablecerFondo.addEventListener('click', () => {
   document.documentElement.style.removeProperty('--fondo-img'); // vuelve al valor de styles.css
   cargarFondoEnPanel();
 });
+
+if(btnGuardarIndex){
+  btnGuardarIndex.addEventListener('click', publicarIndex);
+}
 
 /* ============================================================
    4. PANEL: formulario de alta / edición
@@ -571,6 +581,151 @@ async function mover(id, direccion){
   if(i < 0 || destino < 0 || destino >= cat.length) return;
   [cat[i], cat[destino]] = [cat[destino], cat[i]];
   await aplicarCambios(cat);
+}
+
+/* ============================================================
+   6. PUBLICAR INDEX.HTML
+   ------------------------------------------------------------
+   localStorage solo existe en el navegador actual. Por eso este
+   botón genera un nuevo index.html que, al abrirse, reconstruye
+   automáticamente los datos guardados por el administrador.
+   ============================================================ */
+
+function leerEstadoParaPublicar(){
+  let catalogo = [];
+  let categorias = [];
+  let categoriasOcultas = [];
+  let fondo = '';
+
+  try {
+    catalogo = JSON.parse(localStorage.getItem(CLAVE) || '[]') || [];
+  } catch(e) {
+    catalogo = obtenerCatalogo();
+  }
+
+  try {
+    categorias = JSON.parse(localStorage.getItem(CLAVE_CATEGORIAS) || '[]') || [];
+  } catch(e) {
+    categorias = [];
+  }
+
+  try {
+    categoriasOcultas = JSON.parse(localStorage.getItem(CLAVE_CAT_OCULTAS) || '[]') || [];
+  } catch(e) {
+    categoriasOcultas = [];
+  }
+
+  try {
+    fondo = localStorage.getItem(CLAVE_FONDO) || '';
+  } catch(e) {
+    fondo = '';
+  }
+
+  // Si nunca hubo un guardado del catálogo, usa el estado visible actual.
+  if(!catalogo.length) catalogo = catalogoDesdeHTML();
+
+  return { catalogo, categorias, categoriasOcultas, fondo };
+}
+
+function construirIndexPublicado(){
+  const estado = leerEstadoParaPublicar();
+
+  // JSON seguro para incrustar dentro de un <script>.
+  // También evita que una cadena de datos pueda cerrar accidentalmente el script.
+  const datos = JSON.stringify(estado)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+
+  const bootstrap = `
+<!-- ============================================================
+     ESTADO PUBLICADO POR EL PANEL DE ADMINISTRADOR
+     ============================================================ -->
+<script>
+(function(){
+  try {
+    const estadoPublicado = ${datos};
+    if (Array.isArray(estadoPublicado.catalogo)) {
+      localStorage.setItem('tienda_catalogo_v1', JSON.stringify(estadoPublicado.catalogo));
+    }
+    if (Array.isArray(estadoPublicado.categorias)) {
+      localStorage.setItem('tienda_categorias_v1', JSON.stringify(estadoPublicado.categorias));
+    }
+    if (Array.isArray(estadoPublicado.categoriasOcultas)) {
+      localStorage.setItem('tienda_categorias_ocultas_v1', JSON.stringify(estadoPublicado.categoriasOcultas));
+    }
+    if (estadoPublicado.fondo) {
+      localStorage.setItem('tienda_fondo_v1', estadoPublicado.fondo);
+    } else {
+      localStorage.removeItem('tienda_fondo_v1');
+    }
+  } catch(e) {
+    console.warn('No se pudo cargar el estado publicado:', e);
+  }
+})();
+</script>
+`;
+
+  const marcador = '<script src="script.js"></script>';
+  if(!indexOriginalParaPublicar.includes(marcador)){
+    throw new Error('No se encontró script.js en el index original.');
+  }
+
+  return indexOriginalParaPublicar.replace(
+    marcador,
+    bootstrap + '\n' + marcador
+  );
+}
+
+async function publicarIndex(){
+  if(!btnGuardarIndex) return;
+
+  btnGuardarIndex.disabled = true;
+  if(estadoGuardarIndex){
+    estadoGuardarIndex.hidden = false;
+    estadoGuardarIndex.textContent = 'Preparando index.html...';
+  }
+
+  try {
+    const contenido = construirIndexPublicado();
+    const blob = new Blob([contenido], {type: 'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+
+    enlace.href = url;
+    enlace.download = 'index.html';
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    // El guardado/publicación termina la sesión administrativa.
+    sesionAbierta = false;
+    cerrarModal(modalAdmin);
+    cerrarModal(modalPass);
+    limpiarFormulario();
+
+    alert(
+      'Index guardado correctamente.\\n\\n' +
+      'Se descargó "index.html". Reemplaza el index.html de tu sitio ' +
+      'por este archivo para que los cambios estén disponibles para todos.'
+    );
+  } catch(e) {
+    console.error(e);
+    if(estadoGuardarIndex){
+      estadoGuardarIndex.hidden = false;
+      estadoGuardarIndex.textContent = 'No se pudo generar el index.html.';
+    }
+    alert('No se pudo generar el index.html. Revisa la consola del navegador para más detalles.');
+  } finally {
+    btnGuardarIndex.disabled = false;
+    if(estadoGuardarIndex && !modalAdmin.classList.contains('visible')){
+      estadoGuardarIndex.hidden = true;
+    }
+  }
 }
 
 /* ============================================================

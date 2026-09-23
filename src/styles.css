@@ -483,3 +483,44 @@ a{text-decoration:none;color:inherit}
   .capa-bienvenida.visible .texto-bienvenida,
   .capa-bienvenida.visible .eslogan-bienvenida{animation:none;opacity:1;transform:none}
 }
+
+/* ============================================================
+   PUBLICAR INDEX DESDE EL PANEL DE ADMINISTRADOR
+   ============================================================ */
+.bloque-publicar{
+  margin: 18px 0 6px;
+  padding: 16px;
+  border: 1px solid rgba(37,244,238,.35);
+  border-radius: var(--radio);
+  background: rgba(37,244,238,.06);
+}
+.bloque-publicar h3{
+  margin: 0 0 7px;
+}
+.bloque-publicar .ayuda-admin{
+  margin: 0 0 13px;
+}
+.btn-publicar{
+  width: 100%;
+  border: 1px solid rgba(37,244,238,.75);
+  border-radius: var(--radio);
+  padding: 12px 16px;
+  background: rgba(37,244,238,.14);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.btn-publicar:hover{
+  background: rgba(37,244,238,.24);
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(37,244,238,.14);
+}
+.btn-publicar:active{
+  transform: translateY(0);
+}
+.estado-publicar{
+  margin: 10px 0 0;
+  font-size: .9rem;
+  color: var(--texto-suave);
+}
