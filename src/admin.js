@@ -738,16 +738,33 @@ function abrirPanel(){
   abrirModal(modalAdmin);
 }
 
-btnCerrar.addEventListener('click', () => cerrarModal(modalAdmin));
+/* Cierra el administrador y termina la sesión para que siempre
+   vuelva a pedir la contraseña al entrar otra vez. */
+function salirDelAdministrador(){
+  sesionAbierta = false;
+  cerrarModal(modalAdmin);
+  limpiarFormulario();
+}
 
-/* Clic en el fondo oscuro o tecla Escape: se cierra el modal abierto. */
-[modalPass, modalAdmin].forEach(m => {
-  m.addEventListener('click', e => { if(e.target === m) cerrarModal(m); });
+/* Botón X: salir del administrador y volver a exigir contraseña. */
+btnCerrar.addEventListener('click', salirDelAdministrador);
+
+/* Clic fuera del recuadro de administrador:
+   cierra el panel y termina la sesión. */
+modalAdmin.addEventListener('click', e => {
+  if(e.target === modalAdmin) salirDelAdministrador();
 });
+
+/* En la ventana de contraseña, hacer clic fuera simplemente la cierra. */
+modalPass.addEventListener('click', e => {
+  if(e.target === modalPass) cerrarModal(modalPass);
+});
+
+/* Escape también cierra el administrador y termina la sesión. */
 document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
   cerrarModal(modalPass);
-  cerrarModal(modalAdmin);
+  if(modalAdmin.classList.contains('visible')) salirDelAdministrador();
 });
 
 })();
