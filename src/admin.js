@@ -164,6 +164,10 @@ function comprimirImagen(src, maxLado = MAX_LADO, calidad = CALIDAD){
 function abrirModal(modal){ modal.classList.add('visible'); }
 function cerrarModal(modal){ modal.classList.remove('visible'); }
 
+// El panel de administrador siempre inicia cerrado para los usuarios normales.
+cerrarModal(modalPass);
+cerrarModal(modalAdmin);
+
 function pedirContrasena(){
   campoPass.value = '';
   errorPass.hidden = true;
