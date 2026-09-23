@@ -235,6 +235,8 @@ a{text-decoration:none;color:inherit}
   background:transparent;border:1px solid var(--borde);border-radius:4px;cursor:pointer;
   transition:box-shadow .2s,background .2s;
 }
+/* Las categorías son públicas y siempre deben aceptar clics. */
+.categorias button{pointer-events:auto;user-select:none;}
 .categorias button:hover{background:rgba(255,255,255,.12);box-shadow:0 0 16px 2px rgba(255,255,255,.5)}
 .categorias button.activa{background:rgba(255,255,255,.2);box-shadow:0 0 14px rgba(255,255,255,.4)}
 

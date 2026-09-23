@@ -216,17 +216,32 @@ function filtrar(){
 
 campo.addEventListener('input', filtrar);
 
-/* --- Clic en una categoría (delegado: funciona también con botones agregados después) --- */
-panel.addEventListener('click', e => {
-  const btn = e.target.closest('button[data-filtro]');
-  if(!btn) return;
-  e.preventDefault();
-  categoriaActiva = String(btn.dataset.filtro || 'todos');
+/* --- Clic en una categoría ---
+   Las categorías son PÚBLICAS: cualquier visitante puede usarlas.
+   No se consulta sesionAbierta ni ninguna función del administrador.
+   Se registra el clic directamente en cada botón para que funcione
+   incluso si el panel fue reconstruido dinámicamente. */
+function seleccionarCategoria(btn){
+  if(!btn || !btn.dataset.filtro) return;
+  categoriaActiva = String(btn.dataset.filtro);
   botonesCat().forEach(b => b.classList.toggle('activa', b === btn));
   filtrar();
-  if(window.innerWidth <= 900) alternarMenu(false); // en móvil se cierra al elegir
-});
+  if(window.innerWidth <= 900) alternarMenu(false);
+}
 
+function conectarBotonesCategorias(){
+  botonesCat().forEach(btn => {
+    if(btn.dataset.filtroConectado === '1') return;
+    btn.dataset.filtroConectado = '1';
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      seleccionarCategoria(btn);
+    });
+  });
+}
+
+conectarBotonesCategorias();
 filtrar(); // estado inicial
 
 /* --- Punto de entrada que usa admin.js después de guardar cambios ---
@@ -244,6 +259,7 @@ window.recargarTienda = recargarTienda;
    desapareció, vuelve automáticamente a "Todos". */
 window.recargarCategorias = function(){
   aplicarCategoriasGuardadas();
+  conectarBotonesCategorias();
   if(!panel.querySelector('button[data-filtro="' + categoriaActiva + '"]')){
     categoriaActiva = 'todos';
     botonesCat().forEach(b => b.classList.toggle('activa', b.dataset.filtro === 'todos'));
