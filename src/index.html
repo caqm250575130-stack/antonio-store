@@ -860,6 +860,10 @@
     <hr style="border-color:rgba(255,255,255,.15);margin:18px 0">
 
     <h3>Productos existentes</h3>
+    <p class="ayuda-admin">Usa <strong>Publicar</strong> para decidir qué productos aparecerán en la tienda pública.</p>
+    <div class="modal-botones">
+      <button type="button" id="btnDescargarIndex" class="btn-primario">Descargar index.html publicado</button>
+    </div>
     <div id="listaAdminProductos" class="lista-admin"></div>
   </div>
 </div>
@@ -874,6 +878,9 @@
   <p class="pista-bienvenida">Toca en cualquier lugar para continuar</p>
 </div>
 
+<!-- Datos publicados: el administrador los actualiza al descargar el index.html -->
+<script id="catalogoPublicado" type="application/json">null</script>
+<script id="datosPublicados" type="application/json">{"categorias":[],"categoriasOcultas":[],"fondo":""}</script>
 <script src="script.js"></script>
 <script src="admin.js"></script>
 <script src="bienvenida.js"></script>

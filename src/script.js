@@ -15,14 +15,33 @@ const SVG_WHATSAPP = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#fff
 function aplicarFondoGuardado(){
   try {
     const guardado = localStorage.getItem(CLAVE_FONDO);
-    if(guardado) document.documentElement.style.setProperty('--fondo-img', 'url("' + guardado + '")');
-  } catch(e){ /* si localStorage falla, se deja el fondo de styles.css */ }
+    if(guardado) {
+      document.documentElement.style.setProperty('--fondo-img', 'url("' + guardado + '")');
+      return;
+    }
+  } catch(e){}
+  try {
+    const datos = document.getElementById('datosPublicados');
+    if(datos){
+      const obj = JSON.parse(datos.textContent || '{}');
+      if(obj.fondo) document.documentElement.style.setProperty('--fondo-img', 'url("' + obj.fondo + '")');
+    }
+  } catch(e){}
 }
 aplicarFondoGuardado();
 
 function leerCatalogoGuardado(){
-  try { return JSON.parse(localStorage.getItem(CLAVE_CATALOGO)); }
-  catch(e){ return null; }
+  try {
+    const local = localStorage.getItem(CLAVE_CATALOGO);
+    if(local) return JSON.parse(local);
+  } catch(e){}
+  try {
+    const bloque = document.getElementById('catalogoPublicado');
+    if(bloque && bloque.textContent.trim() && bloque.textContent.trim() !== 'null'){
+      return JSON.parse(bloque.textContent);
+    }
+  } catch(e){}
+  return null;
 }
 
 function crearArticuloProducto(p){
@@ -91,13 +110,33 @@ const CLAVE_CATEGORIAS = 'tienda_categorias_v1';
 const CLAVE_CAT_OCULTAS = 'tienda_categorias_ocultas_v1'; // misma clave que usa admin.js
 
 function leerCategoriasGuardadas(){
-  try { return JSON.parse(localStorage.getItem(CLAVE_CATEGORIAS)) || []; }
-  catch(e){ return []; }
+  try {
+    const local = localStorage.getItem(CLAVE_CATEGORIAS);
+    if(local) return JSON.parse(local) || [];
+  } catch(e){}
+  try {
+    const datos = document.getElementById('datosPublicados');
+    if(datos){
+      const obj = JSON.parse(datos.textContent || '{}');
+      return obj.categorias || [];
+    }
+  } catch(e){}
+  return [];
 }
 
 function leerCategoriasOcultas(){
-  try { return JSON.parse(localStorage.getItem(CLAVE_CAT_OCULTAS)) || []; }
-  catch(e){ return []; }
+  try {
+    const local = localStorage.getItem(CLAVE_CAT_OCULTAS);
+    if(local) return JSON.parse(local) || [];
+  } catch(e){}
+  try {
+    const datos = document.getElementById('datosPublicados');
+    if(datos){
+      const obj = JSON.parse(datos.textContent || '{}');
+      return obj.categoriasOcultas || [];
+    }
+  } catch(e){}
+  return [];
 }
 
 function aplicarCategoriasGuardadas(){

@@ -42,6 +42,7 @@ const campoCaract   = $('campoCaract');
 const listaCatCheck = $('listaCategoriasCheck');
 const listaAdmin    = $('listaAdminProductos');
 const btnCancelForm = $('btnCancelarForm');
+const btnDescargarIndex = $('btnDescargarIndex');
 const campoNuevaCat = $('campoNuevaCategoria');
 const btnAnadirCat  = $('btnAnadirCategoria');
 const CLAVE_CATEGORIAS = 'tienda_categorias_v1'; // misma clave que usa script.js
@@ -77,7 +78,8 @@ function catalogoDesdeHTML(){
     caracteristicas: [...art.querySelectorAll('.caracteristicas li')].map(li => li.textContent.trim()),
     categorias    : (art.dataset.categoria || '').split(' ').filter(Boolean),
     imagen        : art.querySelector('.marco-imagen img')?.getAttribute('src') || '',
-    agotado       : art.classList.contains('agotado')
+    agotado       : art.classList.contains('agotado'),
+    publicado     : true
   }));
 }
 
@@ -476,13 +478,50 @@ formAdmin.addEventListener('submit', async e => {
   } else {
     // los productos nuevos se colocan al inicio para que se vean primero
     catalogo.unshift({ id: nuevoId(), titulo, precio, caracteristicas, categorias,
-                       imagen: imagenActual, agotado: false });
+                       imagen: imagenActual, agotado: false, publicado: false });
   }
 
   if(await aplicarCambios(catalogo)) limpiarFormulario();
 });
 
 btnCancelForm.addEventListener('click', limpiarFormulario);
+btnDescargarIndex.addEventListener('click', descargarIndexPublicado);
+
+/* ============================================================
+   4.5 PUBLICACIÓN DEL CATÁLOGO
+   ============================================================ */
+function escaparHTMLScript(obj){
+  return JSON.stringify(obj)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+function descargarIndexPublicado(){
+  const catalogo = obtenerCatalogo().filter(p => p.publicado !== false);
+  let fondo = '', categorias = [], categoriasOcultas = [];
+  try { fondo = localStorage.getItem(CLAVE_FONDO) || ''; } catch(e){}
+  try { categorias = JSON.parse(localStorage.getItem(CLAVE_CATEGORIAS)) || []; } catch(e){}
+  try { categoriasOcultas = JSON.parse(localStorage.getItem(CLAVE_CAT_OCULTAS)) || []; } catch(e){}
+
+  const datos = { categorias, categoriasOcultas, fondo };
+  const indexActual = document.documentElement.outerHTML;
+  const html = indexActual
+    .replace(/<script id="catalogoPublicado" type="application\/json">[\s\S]*?<\/script>/,
+      '<script id="catalogoPublicado" type="application/json">' + escaparHTMLScript(catalogo) + '<\\/script>')
+    .replace(/<script id="datosPublicados" type="application\/json">[\s\S]*?<\/script>/,
+      '<script id="datosPublicados" type="application/json">' + escaparHTMLScript(datos) + '<\\/script>');
+
+  const blob = new Blob(['<!DOCTYPE html>\n' + html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  alert('Listo. Se descargó index.html con ' + catalogo.length + ' producto(s) publicado(s). Súbelo a tu hosting para que todos puedan verlo.');
+}
 
 /* ============================================================
    5. PANEL: lista de productos existentes
@@ -512,6 +551,17 @@ function dibujarListaAdmin(){
 
     const acciones = document.createElement('div');
     acciones.className = 'acciones';
+    const btnPublicar = crearBoton(
+      p.publicado === false ? 'Publicar' : 'Publicado ✓',
+      async () => {
+        const cat = obtenerCatalogo();
+        const prod = cat.find(x => x.id === p.id);
+        if(prod) prod.publicado = prod.publicado === false;
+        await aplicarCambios(cat);
+      }
+    );
+    btnPublicar.className = p.publicado === false ? 'btn-publicar' : 'btn-publicado';
+
     const btnEstado = crearBoton(p.agotado ? 'Disponible' : 'Agotado', async () => {
       const cat = obtenerCatalogo();
       const prod = cat.find(x => x.id === p.id);
@@ -525,6 +575,7 @@ function dibujarListaAdmin(){
 
     acciones.append(
       crearBoton('Editar',  () => cargarEnFormulario(p)),
+      btnPublicar,
       btnEstado,
       ...(sinImagen ? [] : [crearBoton('Quitar imagen', async () => {
         if(!confirm('¿Quitar la imagen de "' + p.titulo + '"?\n\nEl producto aparecerá como "Producto agotado".')) return;
