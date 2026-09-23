@@ -172,7 +172,6 @@ const fondoMenu  = document.getElementById('fondoMenu');
 const campo      = document.getElementById('campoBusqueda');
 let   productos  = [...document.querySelectorAll('.producto')];
 const aviso      = document.getElementById('sinResultados');
-const botonesCat = () => [...panel.querySelectorAll('button')]; // función: siempre lee los botones actuales
 
 let categoriaActiva = 'todos';
 
@@ -216,32 +215,36 @@ function filtrar(){
 
 campo.addEventListener('input', filtrar);
 
-/* --- Clic en una categoría ---
-   Las categorías son PÚBLICAS: cualquier visitante puede usarlas.
-   No se consulta sesionAbierta ni ninguna función del administrador.
-   Se registra el clic directamente en cada botón para que funcione
-   incluso si el panel fue reconstruido dinámicamente. */
-function seleccionarCategoria(btn){
-  if(!btn || !btn.dataset.filtro) return;
-  categoriaActiva = String(btn.dataset.filtro);
-  botonesCat().forEach(b => b.classList.toggle('activa', b === btn));
-  filtrar();
-  if(window.innerWidth <= 900) alternarMenu(false);
-}
-
-function conectarBotonesCategorias(){
-  botonesCat().forEach(btn => {
-    if(btn.dataset.filtroConectado === '1') return;
-    btn.dataset.filtroConectado = '1';
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      seleccionarCategoria(btn);
-    });
+/* --- Marca visualmente cuál botón está activo --- */
+function marcarBotonActivo(){
+  panel.querySelectorAll('button[data-filtro]').forEach(b => {
+    b.classList.toggle('activa', b.dataset.filtro === categoriaActiva);
   });
 }
 
-conectarBotonesCategorias();
+/* --- Clic en una categoría: SISTEMA REINICIADO ---
+   En vez de "conectar" cada botón uno por uno (lo que fallaba si el
+   panel se reconstruía y algún botón quedaba sin su listener, dando
+   la sensación de categoría "bloqueada"), se usa UN SOLO listener
+   delegado en el contenedor #panelCategorias. Así, sin importar
+   cuántas veces se agreguen, quiten o reordenen los botones (por
+   ejemplo desde el panel de administrador), un clic en cualquiera
+   de ellos —viejo o nuevo— siempre responde, porque el navegador
+   revisa el clic contra el DOM actual en el momento en que ocurre,
+   no contra una lista fija guardada de antemano.
+   Las categorías son PÚBLICAS: cualquier visitante puede usarlas;
+   no se consulta sesionAbierta ni nada del administrador. */
+panel.addEventListener('click', function(e){
+  const btn = e.target.closest('button[data-filtro]');
+  if(!btn) return; // el clic no fue sobre un botón de categoría
+  e.preventDefault();
+
+  categoriaActiva = String(btn.dataset.filtro);
+  marcarBotonActivo();
+  filtrar();
+  if(window.innerWidth <= 900) alternarMenu(false);
+});
+
 filtrar(); // estado inicial
 
 /* --- Punto de entrada que usa admin.js después de guardar cambios ---
@@ -256,13 +259,14 @@ window.recargarTienda = recargarTienda;
 
 /* --- Punto de entrada que usa admin.js al crear o eliminar categorías ---
    Reconstruye la barra lateral y, si la categoría que estaba activa
-   desapareció, vuelve automáticamente a "Todos". */
+   desapareció, vuelve automáticamente a "Todos". Gracias a la
+   delegación de clics de arriba, los botones nuevos (o los que
+   sobrevivan) funcionan de inmediato: no hace falta "reconectarlos". */
 window.recargarCategorias = function(){
   aplicarCategoriasGuardadas();
-  conectarBotonesCategorias();
   if(!panel.querySelector('button[data-filtro="' + categoriaActiva + '"]')){
     categoriaActiva = 'todos';
-    botonesCat().forEach(b => b.classList.toggle('activa', b.dataset.filtro === 'todos'));
   }
+  marcarBotonActivo();
   filtrar();
 };
