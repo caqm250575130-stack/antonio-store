@@ -50,8 +50,11 @@ function crearArticuloProducto(p){
   const sinImagen = !p.imagen;
   art.className = 'producto' + ((p.agotado || sinImagen) ? ' agotado' : '') + (sinImagen ? ' sin-imagen' : '');
   art.dataset.id = p.id;
-  art.dataset.categoria = p.categorias.join(' ');
-  art.dataset.nombre = (p.titulo + ' ' + p.caracteristicas.join(' ')).toLowerCase();
+  const categoriasProducto = Array.isArray(p.categorias) ? p.categorias.filter(Boolean).map(String) : [];
+  const caracteristicasProducto = Array.isArray(p.caracteristicas) ? p.caracteristicas.filter(Boolean).map(String) : [];
+  const tituloProducto = String(p.titulo || 'Producto');
+  art.dataset.categoria = categoriasProducto.join(' ');
+  art.dataset.nombre = (tituloProducto + ' ' + caracteristicasProducto.join(' ')).toLowerCase();
 
   const marco = document.createElement('div');
   marco.className = 'marco-imagen';
@@ -62,11 +65,11 @@ function crearArticuloProducto(p){
   marco.appendChild(img);
 
   const h3 = document.createElement('h3');
-  h3.textContent = p.titulo;
+  h3.textContent = tituloProducto;
 
   const ul = document.createElement('ul');
   ul.className = 'caracteristicas';
-  p.caracteristicas.forEach(c => {
+  caracteristicasProducto.forEach(c => {
     const li = document.createElement('li');
     li.textContent = c;
     ul.appendChild(li);
@@ -83,7 +86,7 @@ function crearArticuloProducto(p){
   btn.className = 'btn-pedir';
   btn.target = '_blank';
   btn.rel = 'noopener';
-  btn.href = 'https://wa.me/50379011314?text=' + encodeURIComponent('Hola, quiero pedir ' + p.titulo);
+  btn.href = 'https://wa.me/50379011314?text=' + encodeURIComponent('Hola, quiero pedir ' + tituloProducto);
   btn.innerHTML = '<span>Pedir</span><span class="icono" aria-hidden="true">' + SVG_WHATSAPP + '</span>';
   filaPrecio.appendChild(btn);
 
@@ -201,7 +204,7 @@ function filtrar(){
   productos.forEach(p => {
     const nombre = normalizarTexto(p.dataset.nombre + ' ' + p.querySelector('h3').textContent);
     const coincideTexto = nombre.includes(texto);
-    const categoriasProducto = p.dataset.categoria.split(' '); // soporta varias categorías por producto
+    const categoriasProducto = (p.dataset.categoria || '').split(' ').filter(Boolean); // soporta varias categorías por producto
     const coincideCat   = categoriaActiva === 'todos' || categoriasProducto.includes(categoriaActiva);
     const mostrar = coincideTexto && coincideCat;
     p.style.display = mostrar ? '' : 'none';
@@ -217,7 +220,8 @@ campo.addEventListener('input', filtrar);
 panel.addEventListener('click', e => {
   const btn = e.target.closest('button[data-filtro]');
   if(!btn) return;
-  categoriaActiva = btn.dataset.filtro;
+  e.preventDefault();
+  categoriaActiva = String(btn.dataset.filtro || 'todos');
   botonesCat().forEach(b => b.classList.toggle('activa', b === btn));
   filtrar();
   if(window.innerWidth <= 900) alternarMenu(false); // en móvil se cierra al elegir
