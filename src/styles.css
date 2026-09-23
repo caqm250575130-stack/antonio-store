@@ -483,21 +483,3 @@ a{text-decoration:none;color:inherit}
   .capa-bienvenida.visible .texto-bienvenida,
   .capa-bienvenida.visible .eslogan-bienvenida{animation:none;opacity:1;transform:none}
 }
-
-/* Publicación de productos */
-.lista-admin .btn-publicar,
-.lista-admin .btn-publicado{
-  border:1px solid rgba(255,255,255,.25);
-  border-radius:8px;
-  padding:7px 10px;
-  cursor:pointer;
-  font-weight:700;
-}
-.lista-admin .btn-publicar{ background:#25d366; color:#07120a; }
-.lista-admin .btn-publicado{ background:rgba(37,211,102,.12); color:#8ff0b5; }
-
-
-/* --- Garantías de interacción de la versión nueva --- */
-.categorias button{pointer-events:auto !important;position:relative;z-index:2;}
-.modal-fondo:not(.visible){pointer-events:none !important;}
-.modal-fondo.visible{pointer-events:auto !important;}
