@@ -2,7 +2,7 @@
    BIENVENIDA CON FUEGOS ARTIFICIALES
    ------------------------------------------------------------
    Al hacer clic en el logo negro del encabezado aparece una
-   capa oscura con el mensaje "Antonio's Store" y debajo "Calidad y Confiabilidad"
+   capa oscura con el mensaje "¡Bienvenido a Antonio's Store!"
    y fuegos artificiales dibujados en un canvas.
    Se cierra solo a los ~5 segundos, o antes si se hace clic
    o se pulsa Escape.
