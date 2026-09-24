@@ -402,6 +402,23 @@ a{text-decoration:none;color:inherit}
 
 .lista-admin{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .item-admin{display:flex;align-items:center;gap:10px;padding:8px;background:rgba(255,255,255,.05);border-radius:8px}
+.item-admin{cursor:grab;user-select:none}
+.item-admin:active{cursor:grabbing}
+.item-admin.arrastrando{opacity:.45}
+.item-admin.objetivo-arrastre{outline:2px dashed var(--cyan);outline-offset:2px}
+.item-admin .asa-arrastre{
+  width:18px;
+  flex:0 0 18px;
+  font-size:1.05rem;
+  line-height:1;
+  letter-spacing:-4px;
+  color:var(--texto-suave);
+  cursor:grab;
+  text-align:center;
+}
+.item-admin .asa-arrastre:active{cursor:grabbing}
+.item-admin .acciones button{cursor:pointer}
+
 .item-admin img{width:40px;height:40px;object-fit:contain;background:#141824;border-radius:4px;flex-shrink:0}
 .item-admin .info{flex:1;min-width:0}
 .item-admin .info strong{display:block;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

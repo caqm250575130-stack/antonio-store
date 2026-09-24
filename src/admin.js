@@ -504,11 +504,19 @@ function dibujarListaAdmin(){
   catalogo.forEach((p, indice) => {
     const item = document.createElement('div');
     item.className = 'item-admin' + (p.agotado || !p.imagen ? ' agotado-admin' : '');
+    item.draggable = true;
+    item.dataset.productId = p.id;
 
     const img = document.createElement('img');
     img.alt = p.titulo;
     const sinImagen = !p.imagen;
     img.src = p.imagen || (typeof IMG_AGOTADO_URI !== 'undefined' ? IMG_AGOTADO_URI : '');
+
+    const asa = document.createElement('span');
+    asa.className = 'asa-arrastre';
+    asa.textContent = '⋮⋮';
+    asa.title = 'Arrastra para cambiar la posición';
+    asa.setAttribute('aria-label', 'Arrastra para cambiar la posición');
 
     const info = document.createElement('div');
     info.className = 'info';
@@ -554,15 +562,72 @@ function dibujarListaAdmin(){
       })
     );
 
-    item.append(img, info, acciones);
+    item.append(asa, img, info, acciones);
     listaAdmin.appendChild(item);
   });
+
+  prepararArrastreProductos();
 
   if(!catalogo.length){
     const vacio = document.createElement('p');
     vacio.textContent = 'Todavía no hay productos.';
     listaAdmin.appendChild(vacio);
   }
+}
+
+/* Permite reordenar productos arrastrándolos directamente en la lista.
+   El nuevo orden se guarda en localStorage para que también lo use la tienda. */
+function prepararArrastreProductos(){
+  const items = [...listaAdmin.querySelectorAll('.item-admin[data-product-id]')];
+  let idArrastrado = '';
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', e => {
+      idArrastrado = item.dataset.productId;
+      item.classList.add('arrastrando');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', idArrastrado);
+    });
+
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+
+      const otro = e.currentTarget;
+      if(otro.dataset.productId === idArrastrado) return;
+
+      items.forEach(x => x.classList.remove('objetivo-arrastre'));
+      otro.classList.add('objetivo-arrastre');
+    });
+
+    item.addEventListener('drop', async e => {
+      e.preventDefault();
+      const idOrigen = e.dataTransfer.getData('text/plain') || idArrastrado;
+      const idDestino = item.dataset.productId;
+
+      items.forEach(x => x.classList.remove('objetivo-arrastre', 'arrastrando'));
+
+      if(!idOrigen || idOrigen === idDestino) return;
+
+      const cat = obtenerCatalogo();
+      const origen = cat.findIndex(x => x.id === idOrigen);
+      const destino = cat.findIndex(x => x.id === idDestino);
+      if(origen < 0 || destino < 0 || origen === destino) return;
+
+      const [movido] = cat.splice(origen, 1);
+      cat.splice(destino, 0, movido);
+      await aplicarCambios(cat);
+    });
+
+    item.addEventListener('dragend', () => {
+      idArrastrado = '';
+      items.forEach(x => x.classList.remove('objetivo-arrastre', 'arrastrando'));
+    });
+
+    item.querySelectorAll('button').forEach(boton => {
+      boton.addEventListener('dragstart', e => e.stopPropagation());
+    });
+  });
 }
 
 function crearBoton(texto, alPulsar){
