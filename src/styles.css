@@ -191,7 +191,13 @@ a{text-decoration:none;color:inherit}
 /* Fila inferior: precio + botón pedir */
 .fila-precio{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px}
 .precio{border:1px solid var(--borde);padding:6px 12px;font-family:var(--tipo-titulo);font-size:1.15rem}
-/* Precio dorado con brillo animado para productos en Ofertas */
+/* Marco dorado con brillo animado para productos en Ofertas */
+.producto[data-categoria~="ofertas"]{
+  border:2px solid #8a6a1f;
+  background:var(--panel);
+  animation:brillo-marco-dorado 3s linear infinite;
+}
+
 .producto[data-categoria~="ofertas"] .precio{
   border-color:#d4af37;
   font-weight:700;
@@ -200,11 +206,27 @@ a{text-decoration:none;color:inherit}
   -webkit-background-clip:text;background-clip:text;color:transparent;
   animation:brillo-dorado 3s linear infinite;
 }
+
 @keyframes brillo-dorado{
   0%{background-position:0% center}
   100%{background-position:-250% center}
 }
+
+@keyframes brillo-marco-dorado{
+  0%{border-color:#8a6a1f}
+  20%{border-color:#f5d67c}
+  35%{border-color:#fff6da}
+  50%{border-color:#f5d67c}
+  70%{border-color:#8a6a1f}
+  85%{border-color:#f5d67c}
+  100%{border-color:#8a6a1f}
+}
+
 @media (prefers-reduced-motion:reduce){
+  .producto[data-categoria~="ofertas"]{
+    animation:none;
+    border-color:#d4af37;
+  }
   .producto[data-categoria~="ofertas"] .precio{animation:none}
 }
 .btn-pedir{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;font-weight:700}
