@@ -1792,3 +1792,133 @@ body:has(#modalAdminFondo.visible) #btnVolverArriba{
 @supports not (overflow:clip){
   @media (max-width:680px){html,body{overflow-x:hidden !important;}}
 }
+
+/* ============================================================
+   CORRECCIÓN MÓVIL: el encabezado sticky no debe tapar
+   el panel de categorías ni la ventana de detalles.
+   El buscador sigue fijo al desplazarse, pero las capas abiertas
+   quedan siempre por encima del encabezado.
+   ============================================================ */
+.capa-bienvenida{z-index:2200 !important;}
+.vista-rapida-fondo{z-index:2100 !important;}
+.admin-modal-fondo{z-index:2300 !important;}
+
+@media (max-width:900px){
+  .fondo-menu{
+    z-index:1300 !important;
+  }
+  .categorias{
+    z-index:1400 !important;
+  }
+  .encabezado{
+    z-index:1200 !important;
+  }
+}
+
+/* Cuando hay una capa abierta, el contenido no queda visualmente
+   por encima de ella aunque el encabezado sea sticky. */
+body:has(.fondo-menu.visible) .encabezado,
+body:has(.vista-rapida-fondo.visible) .encabezado,
+body:has(.admin-modal-fondo.visible) .encabezado{
+  z-index:1200 !important;
+}
+
+/* En móvil el panel de categorías ocupa todo su propio alto y no
+   queda escondido detrás del buscador sticky. */
+@media (max-width:680px){
+  .categorias{
+    top:0 !important;
+    bottom:0 !important;
+    height:100dvh;
+    max-height:none !important;
+    box-sizing:border-box;
+    padding-top:calc(20px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  .vista-rapida-fondo{
+    z-index:2100 !important;
+  }
+
+  .vista-rapida-caja{
+    position:relative;
+    z-index:1;
+  }
+}
+
+/* ============================================================
+   AJUSTE FINAL MOBILE — TARJETA COMPLETA VISIBLE
+   En teléfonos la tarjeta conserva imagen + título + características
+   + controles. La foto no ocupa toda la altura de la pantalla.
+   ============================================================ */
+@media (max-width:760px){
+  .productos .producto{
+    height:auto !important;
+    min-height:0 !important;
+  }
+
+  .productos .marco-imagen{
+    aspect-ratio: 4 / 3 !important;
+    height:auto !important;
+    max-height:none !important;
+    flex:0 0 auto !important;
+  }
+
+  .productos .marco-imagen img{
+    width:100% !important;
+    height:100% !important;
+    max-height:none !important;
+    object-fit:contain !important;
+  }
+
+  .productos .cuerpo-producto{
+    display:flex !important;
+    flex-direction:column !important;
+    min-height:0 !important;
+    height:auto !important;
+    flex:1 1 auto !important;
+    overflow:visible !important;
+  }
+
+  .productos .producto h3{
+    display:block !important;
+    visibility:visible !important;
+    height:auto !important;
+    max-height:none !important;
+  }
+
+  .productos .producto .caracteristicas{
+    display:block !important;
+    visibility:visible !important;
+    height:auto !important;
+    max-height:none !important;
+    overflow:visible !important;
+  }
+
+  .productos .producto .fila-precio{
+    display:grid !important;
+    visibility:visible !important;
+    height:auto !important;
+    min-height:38px !important;
+    margin-top:12px !important;
+    flex:0 0 auto !important;
+  }
+}
+
+@media (max-width:380px){
+  .productos .marco-imagen{aspect-ratio: 4 / 3 !important;}
+  .productos .producto h3{font-size:.84rem !important;}
+  .productos .producto .caracteristicas{font-size:.66rem !important;line-height:1.32 !important;}
+}
+
+/* ============================================================
+   CORRECCIÓN DESKTOP: categorías nunca quedan debajo del header
+   sticky. El desplazamiento superior se calcula dinámicamente
+   según la altura real del encabezado.
+   ============================================================ */
+@media (min-width:901px){
+  .categorias{
+    top:calc(var(--alto-encabezado-sticky, 150px) + 8px) !important;
+    max-height:calc(100vh - var(--alto-encabezado-sticky, 150px) - 24px) !important;
+    box-sizing:border-box;
+  }
+}

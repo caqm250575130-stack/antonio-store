@@ -510,6 +510,21 @@ window.recargarCategorias = function(){
     if(e.key === 'Escape') cerrarVistaRapida();
   });
 
+  /* Mantener el panel de categorías siempre debajo del header sticky en PC.
+     Se mide el alto real para que funcione también con zoom y cambios de resolución. */
+  function actualizarAlturaHeaderSticky(){
+    const header = document.querySelector('.encabezado');
+    if(!header) return;
+    document.documentElement.style.setProperty('--alto-encabezado-sticky', Math.ceil(header.getBoundingClientRect().height) + 'px');
+  }
+  actualizarAlturaHeaderSticky();
+  window.addEventListener('resize', actualizarAlturaHeaderSticky, {passive:true});
+  if('ResizeObserver' in window){
+    const roHeader = new ResizeObserver(actualizarAlturaHeaderSticky);
+    const header = document.querySelector('.encabezado');
+    if(header) roHeader.observe(header);
+  }
+
   /* Volver arriba */
   const btnArriba = document.createElement('button');
   btnArriba.type = 'button';
