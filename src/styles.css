@@ -1378,3 +1378,217 @@ body:has(#modalAdminFondo.visible) #btnVolverArriba{
     bottom:calc(60px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* ============================================================
+   RESPONSIVE MÓVIL — AJUSTE FINAL
+   Objetivo: que ninguna tarjeta, botón o encabezado se comprima,
+   se salga del viewport o se superponga en teléfonos.
+   ============================================================ */
+@media (max-width:680px){
+  html,body{max-width:100%;overflow-x:hidden}
+
+  /* Encabezado en dos niveles: título arriba, accesos debajo. */
+  .encabezado{padding:12px 12px 10px}
+  .fila-superior{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "titulo titulo"
+      "marca menu";
+    align-items:center;
+    gap:10px 12px;
+    width:100%;
+  }
+  .titulos{
+    grid-area:titulo;
+    width:100%;
+    min-width:0;
+    padding:0 4px;
+  }
+  .titulos h1{
+    font-size:clamp(1.65rem,8vw,2.25rem);
+    line-height:1.05;
+    white-space:nowrap;
+  }
+  .titulos p{font-size:.82rem;margin-top:5px}
+  .marca{
+    grid-area:marca;
+    min-width:0;
+    gap:10px;
+    justify-content:flex-start;
+  }
+  .logo{width:68px;height:68px;flex:0 0 68px}
+  .btn-servicio{font-size:.7rem;line-height:1.05}
+  .btn-servicio img{width:44px;height:44px}
+  .btn-menu{
+    grid-area:menu;
+    width:50px;height:50px;
+    justify-self:end;
+    padding:11px;
+  }
+
+  /* Buscador: ocupa todo el ancho disponible y la lupa queda
+     exactamente centrada dentro del campo, nunca en la fila inferior. */
+  .buscador{
+    width:100%;
+    max-width:none;
+    margin:12px 0 0;
+  }
+  .buscador input{
+    width:100%;
+    height:48px;
+    box-sizing:border-box;
+    padding:0 14px 0 46px;
+    font-size:1rem;
+  }
+  .buscador > .lupa,
+  .buscador .lupa{
+    left:16px !important;
+    top:24px !important;
+    width:18px;height:18px;
+    transform:translateY(-50%) !important;
+  }
+
+  /* Contador y favoritos permanecen en una sola fila. */
+  .utilidades-buscador{
+    width:100%;
+    max-width:none;
+    min-height:36px;
+    margin:8px 0 0;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:8px;
+  }
+  .contador-resultados{font-size:.75rem;white-space:nowrap}
+  .acciones-buscador{width:auto !important;display:flex;align-items:center;justify-content:flex-end}
+  .btn-utilidad{min-height:34px;padding:7px 11px;font-size:.72rem}
+
+  /* En teléfono una columna evita tarjetas demasiado estrechas y
+     garantiza que el botón de WhatsApp nunca sobresalga. */
+  .contenido{
+    display:block !important;
+    width:100%;
+    max-width:none;
+    box-sizing:border-box;
+    padding:14px 12px 34px;
+  }
+  .productos{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:16px !important;
+  }
+  .producto{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+  .marco-imagen{
+    width:100%;
+    aspect-ratio:4/3;
+  }
+  .cuerpo-producto{min-width:0;padding:12px 12px 14px}
+  .producto h3{
+    font-size:1.08rem;
+    line-height:1.2;
+    overflow-wrap:anywhere;
+  }
+  .producto .caracteristicas{
+    font-size:.9rem;
+    line-height:1.45;
+    padding-left:18px;
+  }
+
+  /* Tres controles siempre dentro de la tarjeta: información, precio y pedir. */
+  .fila-precio{
+    width:100%;
+    box-sizing:border-box;
+    display:grid !important;
+    grid-template-columns:46px minmax(0,1fr) 52px !important;
+    align-items:end !important;
+    gap:8px !important;
+    margin-top:14px;
+    padding-top:10px;
+  }
+  .fila-precio .btn-vista-rapida{
+    width:46px !important;
+    min-width:46px !important;
+    max-width:46px !important;
+    height:46px !important;
+    min-height:46px !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  .fila-precio .precio{
+    width:100%;
+    min-width:0 !important;
+    max-width:100%;
+    min-height:46px;
+    box-sizing:border-box;
+    padding:7px 8px !important;
+    font-size:clamp(1.12rem,5.2vw,1.35rem) !important;
+    line-height:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .fila-precio .btn-pedir{
+    width:52px !important;
+    min-width:52px !important;
+    max-width:52px;
+    height:52px;
+    margin:0 !important;
+    justify-self:end;
+  }
+
+  /* Favorito siempre dentro de la esquina de la tarjeta. */
+  .btn-favorito{top:10px;right:10px;width:38px;height:38px;font-size:1.3rem}
+
+  /* Botones flotantes respetan el área segura del teléfono. */
+  .btn-admin{
+    right:12px !important;
+    bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  .btn-volver-arriba{
+    right:12px !important;
+    bottom:calc(64px + env(safe-area-inset-bottom,0px)) !important;
+  }
+}
+
+/* Teléfonos muy estrechos: reducimos solo medidas que pueden provocar
+   overflow; nunca comprimimos el contenido horizontalmente. */
+@media (max-width:380px){
+  .encabezado{padding-left:9px;padding-right:9px}
+  .titulos h1{font-size:1.52rem}
+  .logo{width:60px;height:60px;flex-basis:60px}
+  .btn-servicio img{width:40px;height:40px}
+  .btn-menu{width:46px;height:46px}
+  .contenido{padding-left:9px;padding-right:9px}
+  .productos{gap:14px !important}
+  .fila-precio{grid-template-columns:44px minmax(0,1fr) 48px !important;gap:6px !important}
+  .fila-precio .btn-vista-rapida{width:44px !important;min-width:44px !important;max-width:44px !important;height:44px !important;min-height:44px !important}
+  .fila-precio .btn-pedir{width:48px !important;min-width:48px !important;max-width:48px !important;height:48px}
+  .fila-precio .precio{font-size:1.06rem !important}
+  .btn-utilidad{padding-left:9px;padding-right:9px}
+}
+
+/* Ventana de detalles: en móvil nunca excede el ancho ni la altura útil. */
+@media (max-width:680px){
+  .vista-rapida-fondo{padding:8px;overflow:auto}
+  .vista-rapida-caja{
+    width:100%;
+    max-width:100%;
+    max-height:calc(100dvh - 16px);
+    box-sizing:border-box;
+    overflow:auto;
+    padding:12px;
+  }
+  .vista-rapida-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+  .vista-rapida-imagen,.vista-rapida-imagen img{width:100%;max-height:38dvh}
+  .vista-rapida-info{min-width:0;padding:2px 4px 8px}
+  .vista-rapida-info h2{overflow-wrap:anywhere}
+  .vista-rapida-pedir{width:100%;box-sizing:border-box}
+}
