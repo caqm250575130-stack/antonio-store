@@ -205,87 +205,195 @@
 </div>
 
 <!-- Modal: panel de administrador -->
-<div class="modal-fondo" id="modalAdminFondo">
-  <div class="modal-caja modal-grande">
-    <div class="modal-header">
-      <h3 id="tituloFormAdmin">Agregar producto</h3>
-      <button type="button" id="btnCerrarAdmin" class="btn-cerrar" aria-label="Cerrar">✕</button>
-    </div>
-
-    <hr style="border-color:rgba(255,255,255,.15);margin:18px 0">
-
-    <h3>Fondo de la tienda</h3>
-    <p class="ayuda-admin">Cambia la imagen que se ve de fondo en toda la tienda.</p>
-    <div class="bloque-fondo">
-      <label>Nueva imagen de fondo
-        <input type="file" id="campoFondoAdmin" accept="image/*">
-      </label>
-      <img id="previaFondoAdmin" class="previa-imagen" hidden="" alt="Vista previa del fondo">
-      <div class="modal-botones">
-        <button type="button" id="btnRestablecerFondo" class="btn-secundario">Restablecer original</button>
-        <button type="button" id="btnGuardarFondo" class="btn-primario">Guardar fondo</button>
-      </div>
-    </div>
-
-    <form id="formAdmin">
-      <input type="hidden" id="campoIdEdicion" value="">
-
-      <label>Imagen del producto
-        <input type="file" id="campoImagen" accept="image/*">
-      </label>
-      <div class="fila-quitar-imagen">
-        <img id="previaImagen" class="previa-imagen" hidden="" alt="Vista previa">
-        <button type="button" id="btnQuitarImagen" class="btn-secundario" hidden="">Quitar imagen</button>
-        <p id="notaSinImagen" class="nota-sin-imagen" hidden="">Sin imagen: el producto se mostrará como «Producto agotado».</p>
-      </div>
-
-      <label>Nombre del producto
-        <input type="text" id="campoNombre" required="">
-      </label>
-
-      <label>Precio (USD)
-        <input type="number" id="campoPrecio" step="0.01" min="0" required="">
-      </label>
-
-      <label>Características (una por línea)
-        <textarea id="campoCaract" rows="4" required=""></textarea>
-      </label>
-
-      <fieldset class="campo-categorias">
-        <legend>Categorías</legend>
-        <div id="listaCategoriasCheck"></div>
-        <div class="nueva-categoria">
-          <input type="text" id="campoNuevaCategoria" placeholder="Nueva categoría">
-          <button type="button" id="btnAnadirCategoria" class="btn-secundario">Añadir categoría</button>
+<div class="modal-fondo" id="modalAdminFondo" aria-hidden="true">
+  <div class="modal-caja modal-grande admin-modal-caja" role="dialog" aria-modal="true" aria-labelledby="tituloPanelAdmin">
+    <div class="admin-shell">
+      <header class="admin-topbar">
+        <div class="admin-brand">
+          <div class="admin-brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 4.5 6v5.5c0 4.7 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.8 7.5-9.5V6L12 3Z"/>
+              <path d="m9.2 12 1.9 1.9 3.9-4"/>
+            </svg>
+          </div>
+          <div>
+            <p class="admin-kicker">ANTONIO'S STORE</p>
+            <h2 id="tituloPanelAdmin">Panel de administrador</h2>
+            <p>Gestiona productos, categorías, apariencia y publicación desde un solo lugar.</p>
+          </div>
         </div>
-      </fieldset>
+        <button type="button" id="btnCerrarAdmin" class="btn-cerrar admin-close" aria-label="Cerrar panel">✕</button>
+      </header>
 
-      <div class="modal-botones">
-        <button type="button" id="btnCancelarForm" class="btn-secundario">Cancelar</button>
-        <button type="submit" class="btn-primario">Guardar producto</button>
+      <div class="admin-scroll">
+        <section class="admin-summary" aria-label="Resumen de la tienda">
+          <div class="admin-stat">
+            <span class="admin-stat-label">Productos</span>
+            <strong id="adminTotalProductos">0</strong>
+            <span class="admin-stat-note">en el catálogo</span>
+          </div>
+          <div class="admin-stat stat-ok">
+            <span class="admin-stat-label">Disponibles</span>
+            <strong id="adminDisponibles">0</strong>
+            <span class="admin-stat-note">con imagen activa</span>
+          </div>
+          <div class="admin-stat stat-alert">
+            <span class="admin-stat-label">Agotados</span>
+            <strong id="adminAgotados">0</strong>
+            <span class="admin-stat-note">o sin imagen</span>
+          </div>
+          <div class="admin-stat stat-info">
+            <span class="admin-stat-label">Categorías</span>
+            <strong id="adminTotalCategorias">0</strong>
+            <span class="admin-stat-note">organizando productos</span>
+          </div>
+        </section>
+
+        <div class="admin-actions-bar">
+          <button type="button" id="btnNuevoProducto" class="admin-action-primary">
+            <span class="admin-action-icon">＋</span> Nuevo producto
+          </button>
+          <div class="admin-shortcuts">
+            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionProductos">Productos</button>
+            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionFormulario">Editor</button>
+            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionApariencia">Apariencia</button>
+            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionPublicar">Publicar</button>
+          </div>
+        </div>
+
+        <section class="admin-section" id="adminSeccionProductos">
+          <div class="admin-section-head">
+            <div>
+              <span class="admin-section-kicker">CATÁLOGO</span>
+              <h3>Productos existentes</h3>
+              <p>Busca, filtra y arrastra los productos para cambiar su orden.</p>
+            </div>
+            <button type="button" id="btnActualizarAdmin" class="admin-icon-button" title="Actualizar lista" aria-label="Actualizar lista">↻</button>
+          </div>
+
+          <div class="admin-toolbar">
+            <label class="admin-search">
+              <span aria-hidden="true">⌕</span>
+              <input type="search" id="campoBusquedaAdmin" placeholder="Buscar por nombre, característica o categoría…" autocomplete="off">
+            </label>
+            <select id="filtroCategoriaAdmin" class="admin-select" aria-label="Filtrar por categoría">
+              <option value="todas">Todas las categorías</option>
+            </select>
+            <select id="filtroEstadoAdmin" class="admin-select" aria-label="Filtrar por estado">
+              <option value="todos">Todos los estados</option>
+              <option value="disponibles">Disponibles</option>
+              <option value="agotados">Agotados</option>
+              <option value="sin-imagen">Sin imagen</option>
+            </select>
+          </div>
+          <p class="admin-list-hint" id="adminListaHint">Arrastra una tarjeta para cambiar la posición. Los cambios se guardan automáticamente.</p>
+          <div id="listaAdminProductos" class="lista-admin"></div>
+        </section>
+
+        <section class="admin-section" id="adminSeccionFormulario">
+          <div class="admin-section-head">
+            <div>
+              <span class="admin-section-kicker">EDITOR</span>
+              <h3 id="tituloFormAdmin">Agregar producto</h3>
+              <p>Completa los datos y guarda los cambios. Las imágenes se comprimen automáticamente.</p>
+            </div>
+          </div>
+
+          <form id="formAdmin">
+            <input type="hidden" id="campoIdEdicion" value="">
+            <div class="admin-editor-grid">
+              <div class="admin-editor-main">
+                <label>Nombre del producto
+                  <input type="text" id="campoNombre" placeholder="Ej. Audífonos Bluetooth" required>
+                </label>
+                <label>Precio (USD)
+                  <div class="admin-price-input"><span>$</span><input type="number" id="campoPrecio" step="0.01" min="0" placeholder="0.00" required></div>
+                </label>
+                <label>Características
+                  <textarea id="campoCaract" rows="8" placeholder="Una característica por línea" required></textarea>
+                </label>
+              </div>
+
+              <div class="admin-editor-side">
+                <div class="admin-upload-card">
+                  <div class="admin-field-title">Imagen del producto</div>
+                  <label class="admin-file-drop">
+                    <span class="admin-file-icon" aria-hidden="true">＋</span>
+                    <strong>Seleccionar imagen</strong>
+                    <small>JPG, PNG, WEBP · se comprime al guardar</small>
+                    <input type="file" id="campoImagen" accept="image/*">
+                  </label>
+                  <div class="fila-quitar-imagen">
+                    <img id="previaImagen" class="previa-imagen admin-product-preview" hidden alt="Vista previa del producto">
+                    <button type="button" id="btnQuitarImagen" class="btn-secundario" hidden>Quitar imagen</button>
+                    <p id="notaSinImagen" class="nota-sin-imagen" hidden>Sin imagen: el producto se mostrará como «Producto agotado».</p>
+                  </div>
+                </div>
+
+                <fieldset class="campo-categorias admin-category-card">
+                  <legend>Categorías</legend>
+                  <p class="admin-field-help">Puedes asociarlo a varias categorías.</p>
+                  <div id="listaCategoriasCheck"></div>
+                  <div class="nueva-categoria">
+                    <input type="text" id="campoNuevaCategoria" placeholder="Nueva categoría">
+                    <button type="button" id="btnAnadirCategoria" class="btn-secundario">Añadir</button>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+
+            <div class="modal-botones admin-form-actions">
+              <button type="button" id="btnCancelarForm" class="btn-secundario">Limpiar</button>
+              <button type="submit" class="btn-primario">Guardar producto</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="admin-two-col">
+          <section class="admin-section" id="adminSeccionApariencia">
+            <div class="admin-section-head compact">
+              <div>
+                <span class="admin-section-kicker">APARIENCIA</span>
+                <h3>Fondo de la tienda</h3>
+                <p>Cambia el wallpaper que ven los visitantes.</p>
+              </div>
+            </div>
+            <div class="bloque-fondo admin-appearance-card">
+              <img id="previaFondoAdmin" class="previa-imagen admin-background-preview" hidden alt="Vista previa del fondo">
+              <label class="admin-file-drop compact-drop">
+                <span class="admin-file-icon" aria-hidden="true">＋</span>
+                <strong>Elegir nuevo fondo</strong>
+                <small>Imagen horizontal recomendada</small>
+                <input type="file" id="campoFondoAdmin" accept="image/*">
+              </label>
+              <div class="modal-botones">
+                <button type="button" id="btnRestablecerFondo" class="btn-secundario">Restablecer</button>
+                <button type="button" id="btnGuardarFondo" class="btn-primario">Guardar fondo</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section" id="adminSeccionPublicar">
+            <div class="admin-section-head compact">
+              <div>
+                <span class="admin-section-kicker">PUBLICACIÓN</span>
+                <h3>Publicar cambios</h3>
+                <p>Descarga un <strong>index.html</strong> con el catálogo, categorías y fondo actuales.</p>
+              </div>
+            </div>
+            <div class="bloque-publicar admin-publish-card">
+              <div class="admin-publish-icon" aria-hidden="true">↗</div>
+              <div>
+                <strong>Generar versión para tu sitio</strong>
+                <p>Después sustituye el <code>index.html</code> de tu web por el archivo descargado.</p>
+              </div>
+              <button type="button" id="btnGuardarIndex" class="btn-publicar">Guardar index modificado</button>
+              <p id="estadoGuardarIndex" class="estado-publicar" hidden></p>
+            </div>
+          </section>
+        </div>
       </div>
-    </form>
-
-    <hr style="border-color:rgba(255,255,255,.15);margin:18px 0">
-
-    <!-- Publicar todos los cambios en un nuevo index.html -->
-    <section class="bloque-publicar">
-      <h3>Publicar cambios</h3>
-      <p class="ayuda-admin">
-        Genera un <strong>index.html</strong> con el catálogo, categorías y fondo actuales.
-        Después reemplaza el index.html de tu sitio por el archivo descargado para que los cambios
-        queden disponibles para todos los visitantes.
-      </p>
-      <button type="button" id="btnGuardarIndex" class="btn-publicar">
-        Guardar index modificado
-      </button>
-      <p id="estadoGuardarIndex" class="estado-publicar" hidden=""></p>
-    </section>
-
-    <hr style="border-color:rgba(255,255,255,.15);margin:18px 0">
-
-    <h3>Productos existentes</h3>
-    <div id="listaAdminProductos" class="lista-admin"></div>
+    </div>
   </div>
 </div>
 

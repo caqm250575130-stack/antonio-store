@@ -443,6 +443,7 @@ function cargarEnFormulario(p){
   dibujarCategorias(p.categorias || []);
   tituloForm.textContent = 'Editar producto';
   modalAdmin.querySelector('.modal-caja').scrollTop = 0;
+  irASeccionAdmin('adminSeccionFormulario');
 }
 
 campoImagen.addEventListener('change', async () => {
@@ -489,7 +490,10 @@ formAdmin.addEventListener('submit', async e => {
                        imagen: imagenActual, agotado: false });
   }
 
-  if(await aplicarCambios(catalogo)) limpiarFormulario();
+  if(await aplicarCambios(catalogo)){
+    limpiarFormulario();
+    irASeccionAdmin('adminSeccionProductos');
+  }
 });
 
 btnCancelForm.addEventListener('click', limpiarFormulario);
@@ -501,89 +505,220 @@ function dibujarListaAdmin(){
   const catalogo = obtenerCatalogo();
   listaAdmin.innerHTML = '';
 
-  catalogo.forEach((p, indice) => {
-    const item = document.createElement('div');
-    item.className = 'item-admin' + (p.agotado || !p.imagen ? ' agotado-admin' : '');
-    item.draggable = true;
+  actualizarOpcionesFiltroCategoriaAdmin(catalogo);
+
+  const texto = normalizarAdmin(campoBusquedaAdmin?.value || '');
+  const estado = filtroEstadoAdmin?.value || 'todos';
+  const categoria = filtroCategoriaAdmin?.value || 'todas';
+  const filtrados = catalogo.filter(p => {
+    const sinImagen = !p.imagen;
+    const agotado = p.agotado || sinImagen;
+    const coincideTexto = !texto || normalizarAdmin(
+      [p.titulo, ...(p.caracteristicas || []), ...(p.categorias || [])].join(' ')
+    ).includes(texto);
+    const coincideEstado =
+      estado === 'todos' ||
+      (estado === 'disponibles' && !agotado) ||
+      (estado === 'agotados' && agotado) ||
+      (estado === 'sin-imagen' && sinImagen);
+    const categoriasProducto = Array.isArray(p.categorias) ? p.categorias : [];
+    const coincideCategoria =
+      categoria === 'todas' ||
+      (categoria === 'sin-categoria' && categoriasProducto.length === 0) ||
+      categoriasProducto.includes(categoria);
+    return coincideTexto && coincideEstado && coincideCategoria;
+  });
+
+  const sePuedeArrastrar = !texto && estado === 'todos' && categoria === 'todas';
+
+  filtrados.forEach((p) => {
+    const item = document.createElement('article');
+    const sinImagen = !p.imagen;
+    const agotado = p.agotado || sinImagen;
+    item.className = 'item-admin-pro' + (agotado ? ' agotado-admin' : '');
+    item.draggable = sePuedeArrastrar;
     item.dataset.productId = p.id;
 
+    const asa = document.createElement('button');
+    asa.type = 'button';
+    asa.className = 'asa-arrastre';
+    asa.textContent = '⠿';
+    asa.title = sePuedeArrastrar ? 'Arrastra para cambiar el orden' : 'Limpia los filtros para reordenar';
+    asa.setAttribute('aria-label', asa.title);
+    asa.disabled = !sePuedeArrastrar;
+
+    const foto = document.createElement('div');
+    foto.className = 'admin-product-thumb';
     const img = document.createElement('img');
     img.alt = p.titulo;
-    const sinImagen = !p.imagen;
     img.src = p.imagen || (typeof IMG_AGOTADO_URI !== 'undefined' ? IMG_AGOTADO_URI : '');
+    img.onerror = function(){ this.onerror = null; };
+    foto.appendChild(img);
 
-    const asa = document.createElement('span');
-    asa.className = 'asa-arrastre';
-    asa.textContent = '⋮⋮';
-    asa.title = 'Arrastra para cambiar la posición';
-    asa.setAttribute('aria-label', 'Arrastra para cambiar la posición');
+    const estadoBadge = document.createElement('span');
+    estadoBadge.className = 'admin-estado-badge ' + (sinImagen ? 'sin-imagen' : agotado ? 'agotado' : 'disponible');
+    estadoBadge.textContent = sinImagen ? 'Sin imagen' : (agotado ? 'Agotado' : 'Disponible');
+    foto.appendChild(estadoBadge);
 
     const info = document.createElement('div');
-    info.className = 'info';
-    const nombre = document.createElement('strong');
+    info.className = 'admin-product-info';
+
+    const top = document.createElement('div');
+    top.className = 'admin-product-top';
+    const nombre = document.createElement('h4');
     nombre.textContent = p.titulo;
-    const detalle = document.createElement('span');
-    detalle.textContent = '$' + Number(p.precio).toFixed(2) +
-                          ' · ' + (p.categorias || []).join(', ') +
-                          ((p.agotado || sinImagen) ? ' · AGOTADO' + (sinImagen ? ' (sin imagen)' : '') : '');
-    info.append(nombre, detalle);
+    const precio = document.createElement('strong');
+    precio.className = 'admin-product-price';
+    precio.textContent = '$' + Number(p.precio).toFixed(2);
+    top.append(nombre, precio);
+
+    const categorias = document.createElement('div');
+    categorias.className = 'admin-product-cats';
+    (p.categorias || []).forEach(cat => {
+      const chip = document.createElement('span');
+      chip.textContent = cat;
+      categorias.appendChild(chip);
+    });
+    if(!(p.categorias || []).length){
+      const chip = document.createElement('span');
+      chip.textContent = 'Sin categoría';
+      categorias.appendChild(chip);
+    }
+
+    const detalle = document.createElement('p');
+    detalle.className = 'admin-product-detail';
+    detalle.textContent = (p.caracteristicas || []).slice(0,2).join(' · ') || 'Sin características';
+
+    info.append(top, categorias, detalle);
 
     const acciones = document.createElement('div');
-    acciones.className = 'acciones';
-    const btnEstado = crearBoton(p.agotado ? 'Disponible' : 'Agotado', async () => {
+    acciones.className = 'acciones admin-product-actions';
+
+    const btnEditar = crearBoton('Editar', () => cargarEnFormulario(p), 'admin-btn-edit');
+    const btnEstado = crearBoton(p.agotado ? 'Marcar disponible' : 'Marcar agotado', async () => {
       const cat = obtenerCatalogo();
       const prod = cat.find(x => x.id === p.id);
       if(prod) prod.agotado = !prod.agotado;
       await aplicarCambios(cat);
-    });
-    if(sinImagen){   // sin foto siempre se ve como agotado; primero hay que subir una imagen
+    }, p.agotado ? 'admin-btn-success' : 'admin-btn-warn');
+    if(sinImagen){
       btnEstado.disabled = true;
-      btnEstado.title = 'Sube una imagen para poder marcarlo como disponible';
+      btnEstado.textContent = 'Sube una imagen';
+      btnEstado.title = 'Sube una imagen antes de marcarlo como disponible';
     }
 
-    acciones.append(
-      crearBoton('Editar',  () => cargarEnFormulario(p)),
-      btnEstado,
-      ...(sinImagen ? [] : [crearBoton('Quitar imagen', async () => {
-        if(!confirm('¿Quitar la imagen de "' + p.titulo + '"?\n\nEl producto aparecerá como "Producto agotado".')) return;
-        const cat = obtenerCatalogo();
-        const prod = cat.find(x => x.id === p.id);
-        if(prod) prod.imagen = '';
-        if(campoIdEdit.value === p.id) limpiarFormulario();
-        await aplicarCambios(cat);
-      })]),
-      crearBoton('↑', async () => { await mover(p.id, -1); }),
-      crearBoton('↓', async () => { await mover(p.id,  1); }),
-      crearBoton('Eliminar', async () => {
-        if(!confirm('¿Eliminar "' + p.titulo + '" de la tienda?')) return;
-        const cat = obtenerCatalogo().filter(x => x.id !== p.id);
-        if(campoIdEdit.value === p.id) limpiarFormulario();
-        await aplicarCambios(cat);
-      })
-    );
+    const btnQuitar = crearBoton('Quitar imagen', async () => {
+      if(!confirm('¿Quitar la imagen de "' + p.titulo + '"?\n\nEl producto aparecerá como "Producto agotado".')) return;
+      const cat = obtenerCatalogo();
+      const prod = cat.find(x => x.id === p.id);
+      if(prod) prod.imagen = '';
+      if(campoIdEdit.value === p.id) limpiarFormulario();
+      await aplicarCambios(cat);
+    }, 'admin-btn-ghost');
+    btnQuitar.hidden = sinImagen;
 
-    item.append(asa, img, info, acciones);
+    const btnUp = crearBoton('↑', async () => { await mover(p.id, -1); }, 'admin-btn-square');
+    const btnDown = crearBoton('↓', async () => { await mover(p.id, 1); }, 'admin-btn-square');
+    const btnEliminar = crearBoton('Eliminar', async () => {
+      if(!confirm('¿Eliminar "' + p.titulo + '" de la tienda?')) return;
+      const cat = obtenerCatalogo().filter(x => x.id !== p.id);
+      if(campoIdEdit.value === p.id) limpiarFormulario();
+      await aplicarCambios(cat);
+    }, 'admin-btn-danger');
+
+    acciones.append(btnEditar, btnEstado, btnQuitar, btnUp, btnDown, btnEliminar);
+    item.append(asa, foto, info, acciones);
     listaAdmin.appendChild(item);
   });
 
   prepararArrastreProductos();
+  actualizarResumenAdmin(catalogo);
 
-  if(!catalogo.length){
-    const vacio = document.createElement('p');
-    vacio.textContent = 'Todavía no hay productos.';
+  if(!filtrados.length){
+    const vacio = document.createElement('div');
+    vacio.className = 'admin-empty-state';
+    const titulo = document.createElement('strong');
+    titulo.textContent = catalogo.length ? 'No hay resultados' : 'Todavía no hay productos';
+    const textoVacio = document.createElement('p');
+    textoVacio.textContent = catalogo.length
+      ? 'Prueba otra búsqueda o cambia el filtro de estado.'
+      : 'Crea tu primer producto desde el botón «Nuevo producto».';
+    vacio.append(titulo, textoVacio);
     listaAdmin.appendChild(vacio);
   }
-}
+
+  if(adminListaHint){
+    adminListaHint.textContent = sePuedeArrastrar
+      ? 'Arrastra una tarjeta para cambiar la posición. Los cambios se guardan automáticamente.'
+      : 'El reordenamiento se activa cuando no hay búsqueda ni filtros aplicados.';
+  }
+} 
 
 /* Permite reordenar productos arrastrándolos directamente en la lista.
    El nuevo orden se guarda en localStorage para que también lo use la tienda. */
 function prepararArrastreProductos(){
-  const items = [...listaAdmin.querySelectorAll('.item-admin[data-product-id]')];
+  const items = [...listaAdmin.querySelectorAll('.item-admin-pro[data-product-id]')];
   let idArrastrado = '';
+  let pointerActivo = false;
+  let pointerId = null;
+  let itemOrigen = null;
+  let ultimoObjetivo = null;
+
+  function limpiarClases(){
+    items.forEach(x => x.classList.remove('objetivo-arrastre', 'arrastrando'));
+  }
+
+  function objetivoDesdePunto(x, y){
+    const elemento = document.elementFromPoint(x, y);
+    const item = elemento?.closest?.('.item-admin-pro[data-product-id]');
+    if(!item || item === itemOrigen) return null;
+    if(!listaAdmin.contains(item)) return null;
+    return item;
+  }
+
+  function pintarObjetivo(item){
+    if(ultimoObjetivo === item) return;
+    items.forEach(x => x.classList.remove('objetivo-arrastre'));
+    ultimoObjetivo = item || null;
+    if(item) item.classList.add('objetivo-arrastre');
+  }
+
+  async function terminarPointer(clientX, clientY, cancelar = false){
+    if(!pointerActivo) return;
+    pointerActivo = false;
+
+    const origenId = idArrastrado;
+    const destinoItem = cancelar ? null : objetivoDesdePunto(clientX, clientY);
+    const destinoId = destinoItem?.dataset.productId || '';
+
+    if(itemOrigen && pointerId !== null){
+      try { itemOrigen.releasePointerCapture(pointerId); } catch(e) {}
+    }
+
+    limpiarClases();
+    idArrastrado = '';
+    pointerId = null;
+    itemOrigen = null;
+    ultimoObjetivo = null;
+
+    if(!origenId || !destinoId || origenId === destinoId) return;
+
+    const cat = obtenerCatalogo();
+    const origen = cat.findIndex(x => x.id === origenId);
+    const destino = cat.findIndex(x => x.id === destinoId);
+    if(origen < 0 || destino < 0 || origen === destino) return;
+
+    const [movido] = cat.splice(origen, 1);
+    // Después de quitar el origen, el índice del destino puede cambiar.
+    const destinoActual = cat.findIndex(x => x.id === destinoId);
+    cat.splice(Math.max(0, destinoActual), 0, movido);
+    await aplicarCambios(cat);
+  }
 
   items.forEach(item => {
     item.addEventListener('dragstart', e => {
       idArrastrado = item.dataset.productId;
+      itemOrigen = item;
       item.classList.add('arrastrando');
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', idArrastrado);
@@ -592,20 +727,15 @@ function prepararArrastreProductos(){
     item.addEventListener('dragover', e => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-
-      const otro = e.currentTarget;
-      if(otro.dataset.productId === idArrastrado) return;
-
-      items.forEach(x => x.classList.remove('objetivo-arrastre'));
-      otro.classList.add('objetivo-arrastre');
+      if(item.dataset.productId === idArrastrado) return;
+      pintarObjetivo(item);
     });
 
     item.addEventListener('drop', async e => {
       e.preventDefault();
       const idOrigen = e.dataTransfer.getData('text/plain') || idArrastrado;
       const idDestino = item.dataset.productId;
-
-      items.forEach(x => x.classList.remove('objetivo-arrastre', 'arrastrando'));
+      limpiarClases();
 
       if(!idOrigen || idOrigen === idDestino) return;
 
@@ -615,14 +745,53 @@ function prepararArrastreProductos(){
       if(origen < 0 || destino < 0 || origen === destino) return;
 
       const [movido] = cat.splice(origen, 1);
-      cat.splice(destino, 0, movido);
+      const destinoActual = cat.findIndex(x => x.id === idDestino);
+      cat.splice(Math.max(0, destinoActual), 0, movido);
       await aplicarCambios(cat);
     });
 
     item.addEventListener('dragend', () => {
       idArrastrado = '';
-      items.forEach(x => x.classList.remove('objetivo-arrastre', 'arrastrando'));
+      itemOrigen = null;
+      limpiarClases();
     });
+
+    const asa = item.querySelector('.asa-arrastre');
+    if(asa && !asa.disabled){
+      asa.addEventListener('pointerdown', e => {
+        if(e.button !== 0 || pointerActivo) return;
+        e.preventDefault();
+        pointerActivo = true;
+        pointerId = e.pointerId;
+        idArrastrado = item.dataset.productId;
+        itemOrigen = item;
+        ultimoObjetivo = null;
+        item.classList.add('arrastrando');
+        asa.setPointerCapture?.(e.pointerId);
+      });
+
+      asa.addEventListener('pointermove', e => {
+        if(!pointerActivo || e.pointerId !== pointerId) return;
+        e.preventDefault();
+        pintarObjetivo(objetivoDesdePunto(e.clientX, e.clientY));
+      });
+
+      asa.addEventListener('pointerup', e => {
+        if(!pointerActivo || e.pointerId !== pointerId) return;
+        e.preventDefault();
+        terminarPointer(e.clientX, e.clientY);
+      });
+
+      asa.addEventListener('pointercancel', e => {
+        if(!pointerActivo || e.pointerId !== pointerId) return;
+        e.preventDefault();
+        terminarPointer(e.clientX, e.clientY, true);
+      });
+
+      asa.addEventListener('lostpointercapture', () => {
+        if(pointerActivo) terminarPointer(window.innerWidth / 2, window.innerHeight / 2, true);
+      });
+    }
 
     item.querySelectorAll('button').forEach(boton => {
       boton.addEventListener('dragstart', e => e.stopPropagation());
@@ -630,10 +799,11 @@ function prepararArrastreProductos(){
   });
 }
 
-function crearBoton(texto, alPulsar){
+function crearBoton(texto, alPulsar, clase = ''){
   const b = document.createElement('button');
   b.type = 'button';
   b.textContent = texto;
+  if(clase) b.classList.add(clase);
   b.addEventListener('click', alPulsar);
   return b;
 }
@@ -831,5 +1001,128 @@ document.addEventListener('keydown', e => {
   cerrarModal(modalPass);
   if(modalAdmin.classList.contains('visible')) salirDelAdministrador();
 });
+
+
+/* ============================================================
+   7. MEJORAS DEL DASHBOARD DE ADMINISTRACIÓN
+   ------------------------------------------------------------
+   - Resumen en tiempo real.
+   - Búsqueda y filtros.
+   - Accesos rápidos por sección.
+   - Nuevo producto con foco automático.
+   ============================================================ */
+const campoBusquedaAdmin = $('campoBusquedaAdmin');
+const filtroCategoriaAdmin = $('filtroCategoriaAdmin');
+const filtroEstadoAdmin  = $('filtroEstadoAdmin');
+const adminListaHint     = $('adminListaHint');
+const adminTotalProductos = $('adminTotalProductos');
+const adminDisponibles    = $('adminDisponibles');
+const adminAgotados       = $('adminAgotados');
+const adminTotalCategorias = $('adminTotalCategorias');
+const btnNuevoProducto    = $('btnNuevoProducto');
+const btnActualizarAdmin  = $('btnActualizarAdmin');
+
+function normalizarAdmin(valor){
+  return String(valor || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function textoCategoriaAdmin(valor){
+  const botones = [...document.querySelectorAll('#panelCategorias button[data-filtro]')];
+  const boton = botones.find(btn => btn.dataset.filtro === valor);
+  if(boton) return boton.textContent.trim();
+
+  const guardadas = leerCategoriasGuardadas();
+  const guardada = guardadas.find(c => c.valor === valor);
+  return guardada?.texto || valor;
+}
+
+function actualizarOpcionesFiltroCategoriaAdmin(catalogo = obtenerCatalogo()){
+  if(!filtroCategoriaAdmin) return;
+
+  const valorActual = filtroCategoriaAdmin.value || 'todas';
+  const mapa = new Map();
+
+  // Prioriza las categorías visibles de la tienda.
+  categoriasDisponibles().forEach(cat => mapa.set(cat.valor, cat.texto));
+
+  // Incluye también cualquier categoría que ya esté asignada a un producto.
+  catalogo.forEach(p => {
+    (p.categorias || []).forEach(valor => {
+      if(!mapa.has(valor)) mapa.set(valor, textoCategoriaAdmin(valor));
+    });
+  });
+
+  const fragmento = document.createDocumentFragment();
+  const todas = document.createElement('option');
+  todas.value = 'todas';
+  todas.textContent = 'Todas las categorías';
+  fragmento.appendChild(todas);
+
+  [...mapa.entries()]
+    .sort((a,b) => a[1].localeCompare(b[1], 'es', {sensitivity:'base'}))
+    .forEach(([valor, texto]) => {
+      const option = document.createElement('option');
+      option.value = valor;
+      option.textContent = texto;
+      fragmento.appendChild(option);
+    });
+
+  const tieneSinCategoria = catalogo.some(p => !(p.categorias || []).length);
+  if(tieneSinCategoria){
+    const option = document.createElement('option');
+    option.value = 'sin-categoria';
+    option.textContent = 'Sin categoría';
+    fragmento.appendChild(option);
+  }
+
+  filtroCategoriaAdmin.replaceChildren(fragmento);
+  filtroCategoriaAdmin.value = [...filtroCategoriaAdmin.options].some(o => o.value === valorActual)
+    ? valorActual
+    : 'todas';
+}
+
+function actualizarResumenAdmin(catalogo = obtenerCatalogo()){
+  const total = catalogo.length;
+  const disponibles = catalogo.filter(p => p.imagen && !p.agotado).length;
+  const agotados = catalogo.filter(p => p.agotado || !p.imagen).length;
+  const categorias = new Set(catalogo.flatMap(p => p.categorias || [])).size;
+
+  if(adminTotalProductos) adminTotalProductos.textContent = total;
+  if(adminDisponibles) adminDisponibles.textContent = disponibles;
+  if(adminAgotados) adminAgotados.textContent = agotados;
+  if(adminTotalCategorias) adminTotalCategorias.textContent = categorias;
+}
+
+function irASeccionAdmin(id){
+  const el = $(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+campoBusquedaAdmin?.addEventListener('input', dibujarListaAdmin);
+filtroCategoriaAdmin?.addEventListener('change', dibujarListaAdmin);
+filtroEstadoAdmin?.addEventListener('change', dibujarListaAdmin);
+btnActualizarAdmin?.addEventListener('click', () => {
+  if(campoBusquedaAdmin) campoBusquedaAdmin.value = '';
+  if(filtroCategoriaAdmin) filtroCategoriaAdmin.value = 'todas';
+  if(filtroEstadoAdmin) filtroEstadoAdmin.value = 'todos';
+  dibujarListaAdmin();
+});
+
+document.querySelectorAll('[data-admin-scroll]').forEach(btn => {
+  btn.addEventListener('click', () => irASeccionAdmin(btn.dataset.adminScroll));
+});
+
+btnNuevoProducto?.addEventListener('click', () => {
+  limpiarFormulario();
+  irASeccionAdmin('adminSeccionFormulario');
+  setTimeout(() => campoNombre?.focus(), 260);
+});
+
+actualizarResumenAdmin();
 
 })();
