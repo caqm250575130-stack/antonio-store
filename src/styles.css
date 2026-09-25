@@ -1592,3 +1592,203 @@ body:has(#modalAdminFondo.visible) #btnVolverArriba{
   .vista-rapida-info h2{overflow-wrap:anywhere}
   .vista-rapida-pedir{width:100%;box-sizing:border-box}
 }
+
+/* ============================================================
+   RESPONSIVE FINAL — 2 PRODUCTOS POR FILA EN CELULAR
+   - Mantiene dos tarjetas por fila.
+   - Los tres controles caben siempre dentro de cada tarjeta.
+   - En móvil: Información y WhatsApp se muestran solo como iconos.
+   ============================================================ */
+@media (max-width:760px){
+  .contenido{
+    display:block !important;
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 8px 32px !important;
+  }
+
+  .productos{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:12px !important;
+    align-items:stretch;
+  }
+
+  .producto{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    box-sizing:border-box;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .marco-imagen{
+    width:100% !important;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+  }
+
+  .marco-imagen img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+
+  .cuerpo-producto{
+    min-width:0;
+    padding:9px 8px 10px !important;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  .producto h3{
+    font-size:clamp(.84rem,3.4vw,.98rem) !important;
+    line-height:1.18 !important;
+    margin:0 0 7px !important;
+    overflow-wrap:anywhere;
+  }
+
+  .producto .caracteristicas{
+    font-size:clamp(.68rem,2.8vw,.78rem) !important;
+    line-height:1.35 !important;
+    padding-left:15px !important;
+    margin-bottom:0 !important;
+  }
+
+  /* Tres apartados: información | precio | WhatsApp */
+  .fila-precio{
+    width:100% !important;
+    box-sizing:border-box;
+    display:grid !important;
+    grid-template-columns:38px minmax(0,1fr) 40px !important;
+    gap:5px !important;
+    align-items:end !important;
+    margin-top:auto !important;
+    padding-top:10px !important;
+  }
+
+  .fila-precio .btn-vista-rapida{
+    width:38px !important;
+    min-width:38px !important;
+    max-width:38px !important;
+    height:38px !important;
+    min-height:38px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border-radius:9px !important;
+    box-sizing:border-box;
+  }
+
+  .btn-vista-rapida .texto-detalles{display:none !important}
+  .btn-vista-rapida .icono-info{
+    display:inline-flex !important;
+    width:19px !important;
+    height:19px !important;
+    font-size:.72rem !important;
+  }
+
+  .fila-precio .precio{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    min-height:38px !important;
+    height:38px !important;
+    padding:5px 4px !important;
+    box-sizing:border-box;
+    font-size:clamp(.9rem,4vw,1.08rem) !important;
+    line-height:1 !important;
+    overflow:hidden;
+    text-overflow:clip;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* WhatsApp: solo icono en móvil */
+  .fila-precio .btn-pedir{
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:grid !important;
+    place-items:center !important;
+    gap:0 !important;
+  }
+
+  .fila-precio .btn-pedir > span:first-child{display:none !important}
+  .fila-precio .btn-pedir .icono{
+    width:40px !important;
+    height:40px !important;
+    border-radius:9px !important;
+    display:grid !important;
+    place-items:center !important;
+    margin:0 !important;
+  }
+  .fila-precio .btn-pedir .icono svg{
+    width:23px !important;
+    height:23px !important;
+  }
+
+  .btn-favorito{
+    top:7px !important;
+    right:7px !important;
+    width:34px !important;
+    height:34px !important;
+    font-size:1.15rem !important;
+  }
+
+  /* No dejar que el texto "Pedir" antiguo vuelva a aparecer */
+  .producto .fila-precio .btn-pedir::before,
+  .producto .fila-precio .btn-pedir::after{display:none !important}
+}
+
+@media (max-width:360px){
+  .contenido{padding-left:6px !important;padding-right:6px !important}
+  .productos{gap:9px !important}
+  .cuerpo-producto{padding-left:6px !important;padding-right:6px !important}
+  .fila-precio{grid-template-columns:35px minmax(0,1fr) 37px !important;gap:4px !important}
+  .fila-precio .btn-vista-rapida{width:35px !important;min-width:35px !important;max-width:35px !important;height:35px !important;min-height:35px !important}
+  .fila-precio .precio{height:35px !important;min-height:35px !important;font-size:.88rem !important}
+  .fila-precio .btn-pedir{width:37px !important;min-width:37px !important;max-width:37px !important;height:37px !important;min-height:37px !important}
+  .fila-precio .btn-pedir .icono{width:37px !important;height:37px !important}
+  .fila-precio .btn-pedir .icono svg{width:21px !important;height:21px !important}
+  .btn-favorito{width:31px !important;height:31px !important;font-size:1.05rem !important}
+}
+
+/* ============================================================
+   BUSCADOR SIEMPRE VISIBLE AL DESPLAZARSE
+   Mantiene el encabezado (incluido el buscador) pegado al borde
+   superior sin crear un segundo scroll ni romper el responsive.
+   ============================================================ */
+.encabezado{
+  position:sticky !important;
+  top:0 !important;
+  z-index:1200 !important;
+  isolation:isolate;
+  will-change:transform;
+}
+@media (max-width:680px){
+  /* overflow-x:hidden en body puede convertirlo en contenedor de scroll
+     y hacer que sticky deje de seguir al viewport en algunos Android. */
+  html,body{overflow-x:clip !important;}
+  .encabezado{
+    top:0 !important;
+    z-index:1200 !important;
+  }
+  .buscador{
+    position:relative !important;
+    z-index:2;
+  }
+}
+@supports not (overflow:clip){
+  @media (max-width:680px){html,body{overflow-x:hidden !important;}}
+}
