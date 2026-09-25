@@ -207,3 +207,348 @@ window.recargarCategorias = function(){
   }
   filtrar();
 };
+
+/* ============================================================
+   MEJORAS DE EXPERIENCIA DE USUARIO
+   ------------------------------------------------------------
+   - Favoritos persistentes en el navegador.
+   - Contador de resultados + botón para limpiar búsqueda.
+   - Acceso rápido Ctrl/Cmd + K al buscador.
+   - Vista rápida de producto.
+   - Toasts discretos para confirmar acciones.
+   - Botón volver arriba.
+   - Aparición suave de tarjetas al entrar en pantalla.
+   ============================================================ */
+(function(){
+  'use strict';
+
+  const CLAVE_FAVORITOS = 'tienda_favoritos_v1';
+  const lista = document.getElementById('listaProductos');
+  const buscador = document.querySelector('.buscador');
+  const campoBusqueda = document.getElementById('campoBusqueda');
+  if(!lista || !buscador || !campoBusqueda) return;
+
+  let favoritos = new Set();
+  let soloFavoritos = false;
+
+  function leerFavoritos(){
+    try{
+      const datos = JSON.parse(localStorage.getItem(CLAVE_FAVORITOS) || '[]');
+      favoritos = new Set(Array.isArray(datos) ? datos.map(String) : []);
+    }catch(e){ favoritos = new Set(); }
+  }
+
+  function guardarFavoritos(){
+    try{ localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify([...favoritos])); }
+    catch(e){ /* si el almacenamiento falla, la sesión sigue funcionando */ }
+  }
+
+  function mostrarToast(mensaje){
+    let toast = document.getElementById('toastTienda');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'toastTienda';
+      toast.className = 'toast-tienda';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = mensaje;
+    toast.classList.add('visible');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('visible'), 2200);
+  }
+
+  function obtenerDatosProducto(art){
+    return {
+      id: art.dataset.id || '',
+      titulo: art.querySelector('h3')?.textContent.trim() || 'Producto',
+      precio: art.querySelector('.precio')?.textContent.trim() || '',
+      imagen: art.querySelector('.marco-imagen img')?.src || '',
+      agotado: art.classList.contains('agotado'),
+      caracteristicas: [...art.querySelectorAll('.caracteristicas li')].map(li => li.textContent.trim())
+    };
+  }
+
+  function actualizarBotonFavorito(art){
+    const btn = art.querySelector('.btn-favorito');
+    if(!btn) return;
+    const activo = favoritos.has(String(art.dataset.id || ''));
+    btn.classList.toggle('activo', activo);
+    btn.setAttribute('aria-pressed', String(activo));
+    btn.setAttribute('aria-label', activo ? 'Quitar de favoritos' : 'Añadir a favoritos');
+    btn.title = activo ? 'Quitar de favoritos' : 'Añadir a favoritos';
+    btn.textContent = activo ? '♥' : '♡';
+  }
+
+  function esProductoOferta(art){
+    if(!art) return false;
+    const categorias = String(art.dataset.categoria || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    return /(^|\s)ofert(?:a|as)?(?=\s|$)/.test(categorias) || categorias.includes('ofertas');
+  }
+
+  function actualizarEstadoOferta(art){
+    if(!art) return false;
+    const esOferta = esProductoOferta(art);
+    art.classList.toggle('en-oferta', esOferta);
+    art.dataset.oferta = esOferta ? 'true' : 'false';
+    return esOferta;
+  }
+
+  function mejorarTarjeta(art){
+    if(!art) return;
+    actualizarEstadoOferta(art);
+    if(art.dataset.mejorada === '1') return;
+    art.dataset.mejorada = '1';
+
+    if(!art.dataset.id){ art.dataset.id = 'p-' + Math.random().toString(36).slice(2,10); }
+    actualizarEstadoOferta(art);
+
+    const btnFav = document.createElement('button');
+    btnFav.type = 'button';
+    btnFav.className = 'btn-favorito';
+    btnFav.dataset.favorito = art.dataset.id;
+    btnFav.textContent = '♡';
+    art.appendChild(btnFav);
+
+    const btnVista = document.createElement('button');
+    btnVista.type = 'button';
+    btnVista.className = 'btn-vista-rapida';
+    btnVista.innerHTML = '<span class="texto-detalles">Ver detalles</span><span class="icono-info" aria-hidden="true">i</span>';
+    btnVista.dataset.vistaRapida = art.dataset.id;
+    const fila = art.querySelector('.fila-precio');
+    if(fila) fila.insertBefore(btnVista, fila.firstChild);
+    else art.appendChild(btnVista);
+
+    actualizarBotonFavorito(art);
+  }
+
+  function mejorarTodasLasTarjetas(){
+    lista.querySelectorAll('.producto').forEach(mejorarTarjeta);
+  }
+
+  leerFavoritos();
+  mejorarTodasLasTarjetas();
+
+  /* Barra de utilidades del buscador */
+  let utilidades = document.querySelector('.utilidades-buscador');
+  if(!utilidades){
+    utilidades = document.createElement('div');
+    utilidades.className = 'utilidades-buscador';
+    utilidades.innerHTML = `
+      <span class="contador-resultados" id="contadorResultados" aria-live="polite"></span>
+      <div class="acciones-buscador">
+        <button type="button" class="btn-utilidad btn-favoritos-filtro" id="btnFavoritosFiltro" aria-pressed="false">♡ Favoritos <span id="contadorFavoritos">0</span></button>
+        <button type="button" class="btn-utilidad btn-limpiar-busqueda" id="btnLimpiarBusqueda" hidden>Limpiar</button>
+      </div>
+    `;
+    buscador.appendChild(utilidades);
+  }
+
+  const contadorResultados = document.getElementById('contadorResultados');
+  const contadorFavoritos = document.getElementById('contadorFavoritos');
+  const btnFavoritosFiltro = document.getElementById('btnFavoritosFiltro');
+  const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
+  if(!contadorResultados || !contadorFavoritos || !btnFavoritosFiltro || !btnLimpiarBusqueda) return;
+
+  function actualizarFavoritosUI(){
+    contadorFavoritos.textContent = String(favoritos.size);
+    btnFavoritosFiltro.classList.toggle('activo', soloFavoritos);
+    btnFavoritosFiltro.setAttribute('aria-pressed', String(soloFavoritos));
+    btnFavoritosFiltro.firstChild.textContent = soloFavoritos ? '♥ Favoritos ' : '♡ Favoritos ';
+    lista.querySelectorAll('.producto').forEach(actualizarBotonFavorito);
+  }
+
+  /* Envolvemos la función de filtrado existente para sumar favoritos y contador. */
+  const filtrarOriginal = window.filtrar;
+  function filtrarMejorado(){
+    const texto = normalizarTexto(campoBusqueda.value.trim());
+    let visibles = 0;
+    const tarjetas = [...lista.querySelectorAll('.producto')];
+
+    tarjetas.forEach(p => {
+      const nombre = normalizarTexto((p.dataset.nombre || '') + ' ' + (p.querySelector('h3')?.textContent || ''));
+      const coincideTexto = nombre.includes(texto);
+      const categoriasProducto = (p.dataset.categoria || '').split(' ').filter(Boolean);
+      const coincideCat = typeof categoriaActiva === 'undefined' || categoriaActiva === 'todos' || categoriasProducto.includes(categoriaActiva);
+      const coincideFav = !soloFavoritos || favoritos.has(String(p.dataset.id || ''));
+      const mostrar = coincideTexto && coincideCat && coincideFav;
+      p.style.display = mostrar ? '' : 'none';
+      if(mostrar) visibles++;
+    });
+
+    const aviso = document.getElementById('sinResultados');
+    if(aviso){
+      aviso.hidden = visibles > 0;
+      if(visibles === 0){
+        aviso.textContent = soloFavoritos
+          ? 'Todavía no tienes productos favoritos. Pulsa ♡ en un producto para guardarlo aquí.'
+          : (texto ? 'No encontramos productos con esa búsqueda. Prueba con otra palabra.' : 'No hay productos para mostrar.');
+      }
+    }
+
+    contadorResultados.textContent = visibles === 1 ? '1 producto' : `${visibles} productos`;
+    btnLimpiarBusqueda.hidden = !campoBusqueda.value;
+  }
+
+  /* La función global original sigue siendo útil para otras partes del sistema;
+     aquí simplemente sustituimos los listeners que dependen del filtrado. */
+  campoBusqueda.addEventListener('input', filtrarMejorado);
+
+  btnLimpiarBusqueda.addEventListener('click', () => {
+    campoBusqueda.value = '';
+    campoBusqueda.focus();
+    filtrarMejorado();
+  });
+
+  btnFavoritosFiltro.addEventListener('click', () => {
+    soloFavoritos = !soloFavoritos;
+    actualizarFavoritosUI();
+    filtrarMejorado();
+  });
+
+  lista.addEventListener('click', e => {
+    const btnFav = e.target.closest('.btn-favorito');
+    if(btnFav){
+      e.preventDefault();
+      e.stopPropagation();
+      const art = btnFav.closest('.producto');
+      const id = String(art?.dataset.id || '');
+      if(!id) return;
+      if(favoritos.has(id)){
+        favoritos.delete(id);
+        mostrarToast('Producto quitado de favoritos');
+      }else{
+        favoritos.add(id);
+        mostrarToast('Producto añadido a favoritos');
+      }
+      guardarFavoritos();
+      actualizarFavoritosUI();
+      filtrarMejorado();
+      return;
+    }
+
+    const btnVista = e.target.closest('.btn-vista-rapida');
+    if(btnVista){
+      e.preventDefault();
+      abrirVistaRapida(btnVista.closest('.producto'));
+    }
+  });
+
+  /* Vista rápida */
+  let modalVista = null;
+  function crearModalVista(){
+    if(modalVista) return modalVista;
+    modalVista = document.createElement('div');
+    modalVista.className = 'vista-rapida-fondo';
+    modalVista.hidden = true;
+    modalVista.innerHTML = `
+      <div class="vista-rapida-caja" role="dialog" aria-modal="true" aria-labelledby="vistaRapidaTitulo">
+        <button type="button" class="vista-rapida-cerrar" aria-label="Cerrar detalles">✕</button>
+        <div class="vista-rapida-grid">
+          <div class="vista-rapida-imagen"><img id="vistaRapidaImagen" alt=""></div>
+          <div class="vista-rapida-info">
+            <span class="vista-rapida-kicker">DETALLES DEL PRODUCTO</span>
+            <h2 id="vistaRapidaTitulo"></h2>
+            <div id="vistaRapidaPrecio" class="vista-rapida-precio"></div>
+            <ul id="vistaRapidaCaracteristicas"></ul>
+            <a id="vistaRapidaPedir" class="vista-rapida-pedir" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalVista);
+    modalVista.addEventListener('click', e => {
+      if(e.target === modalVista || e.target.closest('.vista-rapida-cerrar')) cerrarVistaRapida();
+    });
+    return modalVista;
+  }
+
+  function abrirVistaRapida(art){
+    if(!art) return;
+    const datos = obtenerDatosProducto(art);
+    const modal = crearModalVista();
+    const imagen = document.getElementById('vistaRapidaImagen');
+    const titulo = document.getElementById('vistaRapidaTitulo');
+    const precio = document.getElementById('vistaRapidaPrecio');
+    const listaCaract = document.getElementById('vistaRapidaCaracteristicas');
+    const pedir = document.getElementById('vistaRapidaPedir');
+
+    imagen.src = datos.imagen;
+    imagen.alt = datos.titulo;
+    titulo.textContent = datos.titulo;
+    precio.textContent = datos.precio;
+    listaCaract.replaceChildren(...datos.caracteristicas.map(c => {
+      const li = document.createElement('li'); li.textContent = c; return li;
+    }));
+    pedir.textContent = datos.agotado ? 'Producto no disponible' : 'Pedir por WhatsApp';
+    pedir.classList.toggle('disabled', datos.agotado);
+    pedir.href = datos.agotado ? '#' : 'https://wa.me/50379011314?text=' + encodeURIComponent('Hola, quiero pedir ' + datos.titulo);
+    const esOferta = esProductoOferta(art);
+    // El efecto dorado pertenece al cuadro de detalles, no al fondo del modal.
+    const caja = modal.querySelector('.vista-rapida-caja');
+    caja?.classList.toggle('producto-en-oferta', esOferta);
+    modal.classList.remove('producto-en-oferta');
+    modal.hidden = false;
+    requestAnimationFrame(() => modal.classList.add('visible'));
+    document.body.classList.add('sin-scroll');
+    modal.querySelector('.vista-rapida-cerrar')?.focus();
+  }
+
+  function cerrarVistaRapida(){
+    if(!modalVista) return;
+    modalVista.classList.remove('visible');
+    setTimeout(() => { if(modalVista) modalVista.hidden = true; }, 180);
+    document.body.classList.remove('sin-scroll');
+  }
+
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault(); campoBusqueda.focus(); campoBusqueda.select();
+    }
+    if(e.key === 'Escape') cerrarVistaRapida();
+  });
+
+  /* Volver arriba */
+  const btnArriba = document.createElement('button');
+  btnArriba.type = 'button';
+  btnArriba.id = 'btnVolverArriba';
+  btnArriba.className = 'btn-volver-arriba';
+  btnArriba.setAttribute('aria-label','Volver arriba');
+  btnArriba.title = 'Volver arriba';
+  btnArriba.textContent = '↑';
+  document.body.appendChild(btnArriba);
+  btnArriba.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  window.addEventListener('scroll', () => btnArriba.classList.toggle('visible', window.scrollY > 500), {passive:true});
+
+  /* Aparición suave sin afectar a usuarios que prefieren menos movimiento. */
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){
+    const observador = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('entra-visible');
+          observador.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.08});
+    lista.querySelectorAll('.producto').forEach(p => {
+      p.classList.add('entra-suave');
+      observador.observe(p);
+    });
+  }
+
+  /* Cuando el administrador reconstruye el catálogo, añadimos las mejoras a las nuevas tarjetas. */
+  const recargarOriginal = window.recargarTienda;
+  if(typeof recargarOriginal === 'function'){
+    window.recargarTienda = function(){
+      recargarOriginal();
+      mejorarTodasLasTarjetas();
+      actualizarFavoritosUI();
+      filtrarMejorado();
+    };
+  }
+
+  actualizarFavoritosUI();
+  filtrarMejorado();
+})();

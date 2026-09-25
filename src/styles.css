@@ -192,12 +192,12 @@ a{text-decoration:none;color:inherit}
 .fila-precio{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px}
 .precio{border:1px solid var(--borde);padding:6px 12px;font-family:var(--tipo-titulo);font-size:1.15rem}
 /* Marco dorado fino para productos en Ofertas */
-.producto[data-categoria~="ofertas"]{
+.producto.en-oferta{
   border:1px solid #8a6a1f;
   background:var(--panel);
   animation:brillo-marco-dorado 3s linear infinite;
 }
-.producto[data-categoria~="ofertas"] .precio{
+.producto.en-oferta .precio{
   border-color:#d4af37;
   font-weight:700;
   background:linear-gradient(110deg,#8a6a1f 0%,#f5d67c 20%,#fff6da 35%,#f5d67c 50%,#8a6a1f 70%,#f5d67c 85%,#8a6a1f 100%);
@@ -219,11 +219,11 @@ a{text-decoration:none;color:inherit}
   100%{border-color:#8a6a1f}
 }
 @media (prefers-reduced-motion:reduce){
-  .producto[data-categoria~="ofertas"]{
+  .producto.en-oferta{
     animation:none;
     border-color:#d4af37;
   }
-  .producto[data-categoria~="ofertas"] .precio{animation:none}
+  .producto.en-oferta .precio{animation:none}
 }
 .btn-pedir{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;font-weight:700}
 .btn-pedir .icono{
@@ -780,5 +780,601 @@ a{text-decoration:none;color:inherit}
   .admin-modal-caja{
     height:96vh;
     max-height:96vh;
+  }
+}
+
+/* ============================================================
+   MEJORAS DE EXPERIENCIA DE USUARIO
+   ============================================================ */
+.utilidades-buscador{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  max-width:640px;
+  margin:8px auto 0;
+  min-height:28px;
+}
+.contador-resultados{
+  color:rgba(255,255,255,.58);
+  font-size:.72rem;
+  font-weight:700;
+}
+.acciones-buscador{display:flex;align-items:center;gap:7px}
+.btn-utilidad{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.045);
+  color:#fff;
+  border-radius:999px;
+  padding:6px 10px;
+  font:600 .7rem/1 Inter,system-ui,sans-serif;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;
+}
+.btn-utilidad:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.38);transform:translateY(-1px)}
+.btn-utilidad.activo{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px rgba(37,244,238,.16)}
+.btn-utilidad span{display:inline-grid;place-items:center;min-width:18px;margin-left:3px;padding:1px 5px;border-radius:999px;background:rgba(255,255,255,.1);font-size:.62rem}
+
+.producto{position:relative}
+.btn-favorito{
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:4;
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:50%;
+  background:rgba(5,6,10,.72);
+  color:#fff;
+  font-size:1.25rem;
+  line-height:1;
+  cursor:pointer;
+  backdrop-filter:blur(7px);
+  transition:transform .2s,color .2s,border-color .2s,background .2s,box-shadow .2s;
+}
+.btn-favorito:hover{transform:scale(1.1);border-color:rgba(255,255,255,.5);background:rgba(5,6,10,.9)}
+.btn-favorito.activo{color:#ff4f87;border-color:rgba(255,79,135,.65);box-shadow:0 0 14px rgba(255,79,135,.24)}
+
+.btn-vista-rapida{
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.045);
+  color:#fff;
+  border-radius:8px;
+  padding:8px 10px;
+  min-height:42px;
+  font:700 .72rem/1 Inter,system-ui,sans-serif;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+}
+.btn-vista-rapida:hover{background:rgba(37,244,238,.08);border-color:rgba(37,244,238,.5);transform:translateY(-1px)}
+.btn-vista-rapida .icono-info{
+  display:none;
+  width:20px;height:20px;border:2px solid currentColor;border-radius:50%;
+  align-items:center;justify-content:center;
+  font:900 .76rem/1 Arial,sans-serif;
+}
+.fila-precio .btn-vista-rapida{flex:1;min-width:0}
+.fila-precio .btn-pedir{flex:0 0 auto}
+
+/* Precio de las tarjetas: marco más amplio y equilibrado */
+.fila-precio .precio{
+  min-width:92px;
+  padding:7px 16px;
+  text-align:center;
+  font-size:1.22rem;
+  box-sizing:border-box;
+}
+
+/* En móvil se priorizan controles compactos y táctiles. */
+@media (max-width:620px){
+  .fila-precio{
+    display:grid;
+    grid-template-columns:minmax(44px,1fr) auto 44px;
+    align-items:center;
+    gap:8px;
+    flex-wrap:nowrap;
+  }
+  .fila-precio .btn-vista-rapida{
+    order:0;
+    flex:none;
+    width:44px;min-width:44px;height:44px;min-height:44px;
+    padding:0;
+    border-radius:10px;
+  }
+  .btn-vista-rapida .texto-detalles{display:none}
+  .btn-vista-rapida .icono-info{display:inline-flex}
+  .fila-precio .precio{
+    min-width:88px;
+    justify-self:center;
+    padding:7px 12px;
+    font-size:1.18rem;
+  }
+  .fila-precio .btn-pedir{
+    margin-left:0;
+    justify-self:end;
+  }
+}
+
+
+.toast-tienda{
+  position:fixed;
+  left:50%;bottom:22px;
+  z-index:1000;
+  transform:translate(-50%,18px);
+  opacity:0;pointer-events:none;
+  max-width:min(92vw,430px);
+  padding:10px 15px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  background:rgba(8,10,18,.94);
+  color:#fff;
+  box-shadow:0 10px 35px rgba(0,0,0,.4),0 0 18px rgba(37,244,238,.1);
+  backdrop-filter:blur(12px);
+  font-size:.76rem;font-weight:700;text-align:center;
+  transition:opacity .2s,transform .2s;
+}
+.toast-tienda.visible{opacity:1;transform:translate(-50%,0)}
+
+.vista-rapida-fondo{
+  position:fixed;inset:0;z-index:950;
+  display:grid;place-items:center;
+  padding:20px;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(8px);
+  opacity:0;
+  transition:opacity .18s ease;
+}
+.vista-rapida-fondo[hidden]{display:none}
+.vista-rapida-fondo.visible{opacity:1}
+.vista-rapida-caja{
+  position:relative;
+  width:min(880px,100%);
+  max-height:min(88vh,720px);
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(12,15,25,.98),rgba(5,7,13,.97));
+  box-shadow:0 25px 80px rgba(0,0,0,.55),0 0 35px rgba(37,244,238,.08);
+  padding:20px;
+  transform:translateY(10px) scale(.985);
+  transition:transform .18s ease;
+}
+.vista-rapida-caja.producto-en-oferta{
+  border-color:#8a6a1f;
+  animation:brillo-marco-dorado 3s linear infinite;
+}
+.vista-rapida-fondo.visible .vista-rapida-caja{transform:none}
+.vista-rapida-cerrar{
+  position:absolute;top:10px;right:10px;z-index:2;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.35);color:#fff;cursor:pointer;
+  font-size:1rem;
+}
+.vista-rapida-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:22px;align-items:center}
+.vista-rapida-imagen{
+  background:#0d1018;border:1px solid rgba(255,255,255,.24);border-radius:12px;overflow:hidden;max-height:65vh;
+  animation:none;
+}
+.vista-rapida-imagen img{width:100%;max-height:65vh;object-fit:contain}
+.vista-rapida-info{padding:10px 8px}
+.vista-rapida-kicker{font-size:.62rem;font-weight:900;letter-spacing:1.4px;color:var(--cyan)}
+.vista-rapida-info h2{font-family:var(--tipo-titulo);font-size:clamp(1.35rem,3vw,2rem);margin:8px 0 10px}
+.vista-rapida-precio{
+  display:inline-block;
+  border:1px solid rgba(255,255,255,.28);
+  padding:6px 12px;
+  margin-bottom:14px;
+  font:700 1.2rem var(--tipo-titulo);
+  color:#fff;
+}
+.vista-rapida-caja.producto-en-oferta .vista-rapida-precio{
+  border-color:#d4af37;
+  background:linear-gradient(110deg,#8a6a1f 0%,#f5d67c 20%,#fff6da 35%,#f5d67c 50%,#8a6a1f 70%,#f5d67c 85%,#8a6a1f 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:brillo-dorado 3s linear infinite;
+}
+.vista-rapida-info ul{padding-left:20px;color:var(--texto-suave);line-height:1.6}
+.vista-rapida-pedir{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;min-height:44px;padding:0 17px;border-radius:9px;background:var(--verde);color:#fff;font-weight:800;box-shadow:0 0 18px rgba(37,211,102,.16)}
+.vista-rapida-pedir.disabled{opacity:.45;pointer-events:none;background:#555}
+.sin-scroll{overflow:hidden}
+
+.btn-volver-arriba{
+  position:fixed;right:18px;bottom:18px;z-index:70;
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(8,10,18,.86);color:#fff;
+  cursor:pointer;font-size:1.25rem;font-weight:900;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  backdrop-filter:blur(8px);
+  transition:opacity .2s,transform .2s,background .2s;
+}
+.btn-volver-arriba.visible{opacity:1;transform:none;pointer-events:auto}
+.btn-volver-arriba:hover{background:rgba(37,244,238,.14)}
+
+.entra-suave{opacity:0;transform:translateY(14px)}
+.entra-suave.entra-visible{opacity:1;transform:none;transition:opacity .45s ease,transform .45s ease}
+
+@media (max-width:620px){
+  .utilidades-buscador{align-items:flex-start;flex-direction:column;margin-top:6px}
+  .acciones-buscador{width:100%;justify-content:space-between}
+  .btn-utilidad{min-height:34px}
+  .fila-precio{align-items:stretch;flex-wrap:wrap}
+  .fila-precio .btn-vista-rapida{order:3;flex-basis:100%}
+  .fila-precio .btn-pedir{margin-left:auto}
+  .vista-rapida-fondo{padding:10px}
+  .vista-rapida-caja{padding:14px;max-height:92vh}
+  .vista-rapida-grid{grid-template-columns:1fr;gap:12px}
+  .vista-rapida-imagen,.vista-rapida-imagen img{max-height:42vh}
+  .vista-rapida-info{padding:4px}
+  .btn-volver-arriba{right:12px;bottom:12px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .entra-suave{opacity:1;transform:none}
+  .entra-suave.entra-visible{transition:none}
+  .vista-rapida-fondo,.vista-rapida-caja,.toast-tienda{transition:none}
+  .vista-rapida-caja,.vista-rapida-imagen,.vista-rapida-precio{animation:none}
+  .vista-rapida-caja{border-color:rgba(255,255,255,.22)}
+  .vista-rapida-caja.producto-en-oferta{border-color:#d4af37}
+  .vista-rapida-caja.producto-en-oferta .vista-rapida-precio{background:none;color:#f5d67c}
+}
+
+
+@media (max-width:480px){
+  .vista-rapida-fondo{padding:6px;place-items:center}
+  .vista-rapida-caja{
+    width:100%;max-height:96vh;padding:10px;border-radius:14px;
+  }
+  .vista-rapida-grid{grid-template-columns:1fr;gap:8px}
+  .vista-rapida-imagen{width:100%;max-height:36vh;border-radius:10px}
+  .vista-rapida-imagen img{width:100%;max-height:36vh}
+  .vista-rapida-info{padding:2px 4px 6px}
+  .vista-rapida-info h2{font-size:1.3rem;margin:6px 0 8px;padding-right:34px}
+  .vista-rapida-precio{font-size:1.05rem;padding:6px 14px;margin-bottom:8px}
+  .vista-rapida-info ul{margin:6px 0;padding-left:18px;line-height:1.4;font-size:.9rem}
+  .vista-rapida-pedir{width:100%;min-height:42px;margin-top:8px}
+  .vista-rapida-cerrar{top:8px;right:8px;width:36px;height:36px}
+}
+
+/* ============================================================
+   AJUSTE EXTRA PARA ZOOM DE ESCRITORIO Y PANTALLAS ESTRECHAS
+   El navegador reduce el viewport CSS cuando se hace zoom, por lo
+   que este breakpoint también evita que el encabezado se deforme.
+   ============================================================ */
+@media (max-width:760px){
+  .fila-superior{
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .titulos{
+    order:-1;
+    flex-basis:100%;
+  }
+  .logo{width:60px;height:60px}
+  .btn-servicio img{width:40px;height:40px}
+  .btn-menu{width:48px;height:48px}
+
+  /* En pantallas estrechas y con zoom, "Ver detalles" pasa a ser solo i. */
+  .fila-precio{
+    display:grid !important;
+    grid-template-columns:44px minmax(76px,1fr) 44px;
+    align-items:center;
+    gap:8px;
+    flex-wrap:nowrap !important;
+  }
+  .fila-precio .btn-vista-rapida{
+    order:0 !important;
+    flex:none !important;
+    flex-basis:auto !important;
+    width:44px !important;
+    min-width:44px !important;
+    max-width:44px !important;
+    height:44px;
+    min-height:44px;
+    padding:0;
+    margin:0;
+    border-radius:10px;
+  }
+  .btn-vista-rapida .texto-detalles{display:none !important}
+  .btn-vista-rapida .icono-info{display:inline-flex !important}
+  .fila-precio .precio{
+    min-width:76px;
+    justify-self:center;
+    padding:7px 10px;
+    font-size:1.16rem;
+    white-space:nowrap;
+  }
+  .fila-precio .btn-pedir{
+    margin:0 !important;
+    justify-self:end;
+    width:44px;
+    min-width:44px;
+  }
+}
+
+/* ============================================================
+   AJUSTE FINAL: precio más vistoso + distribución estable
+   Se adapta por ANCHO REAL de cada tarjeta, no solo por viewport.
+   ============================================================ */
+.producto{
+  container-type:inline-size;
+}
+
+.fila-precio{
+  display:grid;
+  grid-template-columns:minmax(96px,1fr) auto 52px;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  box-sizing:border-box;
+}
+
+.fila-precio .btn-vista-rapida{
+  width:100%;
+  min-width:96px;
+  white-space:nowrap;
+  box-sizing:border-box;
+}
+
+.fila-precio .precio{
+  min-width:108px;
+  padding:8px 16px;
+  font-size:1.38rem;
+  line-height:1.1;
+  font-weight:800;
+  text-align:center;
+  white-space:nowrap;
+  box-sizing:border-box;
+}
+
+.fila-precio .btn-pedir{
+  width:52px;
+  min-width:52px;
+  margin:0;
+}
+
+/* Solo las ofertas llevan el tratamiento dorado. Los precios normales
+   siguen siendo blancos y no heredan ningún efecto dorado. */
+.producto:not([data-categoria~="ofertas"]) .precio{
+  color:#fff;
+  background:none;
+  animation:none;
+  border-color:rgba(255,255,255,.7);
+}
+
+/* Cuando la tarjeta se hace estrecha por zoom o por el layout,
+   Ver detalles se convierte en el icono de información. */
+@container (max-width:350px){
+  .fila-precio{
+    grid-template-columns:44px minmax(82px,1fr) 44px;
+    gap:7px;
+  }
+  .fila-precio .btn-vista-rapida{
+    width:44px;
+    min-width:44px;
+    height:44px;
+    min-height:44px;
+    padding:0;
+    border-radius:10px;
+  }
+  .btn-vista-rapida .texto-detalles{display:none !important}
+  .btn-vista-rapida .icono-info{display:inline-flex !important}
+  .fila-precio .precio{
+    min-width:82px;
+    padding:7px 8px;
+    font-size:1.18rem;
+  }
+  .fila-precio .btn-pedir{
+    width:44px;
+    min-width:44px;
+  }
+}
+
+/* En celulares mantenemos el mismo criterio y dejamos el precio
+   suficientemente grande sin hacer crecer demasiado la tarjeta. */
+@media (max-width:760px){
+  .fila-precio{
+    grid-template-columns:44px minmax(82px,1fr) 44px;
+    gap:8px;
+  }
+  .fila-precio .btn-vista-rapida{
+    width:44px;
+    min-width:44px;
+    height:44px;
+    min-height:44px;
+    padding:0;
+    border-radius:10px;
+  }
+  .btn-vista-rapida .texto-detalles{display:none !important}
+  .btn-vista-rapida .icono-info{display:inline-flex !important}
+  .fila-precio .precio{
+    min-width:82px;
+    padding:7px 8px;
+    font-size:1.18rem;
+  }
+  .fila-precio .btn-pedir{
+    width:44px;
+    min-width:44px;
+  }
+}
+
+@media (max-width:360px){
+  .fila-precio{grid-template-columns:42px minmax(72px,1fr) 42px;gap:6px}
+  .fila-precio .btn-vista-rapida,
+  .fila-precio .btn-pedir{width:42px;min-width:42px}
+  .fila-precio .precio{min-width:72px;font-size:1.08rem;padding:7px 6px}
+}
+
+/* ============================================================
+   AJUSTE FINAL DE ALINEACIÓN
+   - La lupa se centra respecto al campo, no respecto a toda la
+     zona del buscador (que también contiene los contadores).
+   - Precio e información quedan a la misma base que el icono
+     de WhatsApp/Pedir.
+   ============================================================ */
+.buscador .lupa{
+  top:23px;
+  transform:translateY(-50%);
+  width:18px;height:18px;
+}
+
+.fila-precio{
+  align-items:end;
+}
+
+.fila-precio .btn-vista-rapida,
+.fila-precio .precio{
+  align-self:end;
+}
+
+.fila-precio .btn-vista-rapida{
+  min-height:44px;
+}
+
+.fila-precio .precio{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+@container (max-width:350px){
+  .fila-precio .precio{
+    min-height:44px;
+  }
+}
+
+@media (max-width:760px){
+  .fila-precio{
+    align-items:end;
+  }
+}
+
+
+/* ============================================================
+   CORRECCIÓN FINAL: ofertas + lupa del buscador
+   - La clase .en-oferta la asigna JS de forma robusta a partir
+     de la categoría del producto.
+   - La lupa se centra únicamente en el campo de 46px, aunque
+     debajo existan los contadores y Favoritos.
+   ============================================================ */
+.producto.en-oferta{
+  border:1px solid #8a6a1f;
+  animation:brillo-marco-dorado 3s linear infinite;
+}
+.producto.en-oferta .precio{
+  border-color:#d4af37;
+  font-weight:700;
+  background:linear-gradient(110deg,#8a6a1f 0%,#f5d67c 20%,#fff6da 35%,#f5d67c 50%,#8a6a1f 70%,#f5d67c 85%,#8a6a1f 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:brillo-dorado 3s linear infinite;
+}
+.producto:not(.en-oferta) .precio{
+  color:#fff;
+  background:none;
+  animation:none;
+  border-color:rgba(255,255,255,.7);
+}
+.buscador > .lupa{
+  top:23px !important;
+  left:16px;
+  width:18px;height:18px;
+  transform:translateY(-50%);
+}
+@media (prefers-reduced-motion:reduce){
+  .producto.en-oferta{animation:none;border-color:#d4af37}
+  .producto.en-oferta .precio{animation:none}
+}
+
+/* ============================================================
+   AJUSTE: detalles dorados solo para productos en oferta
+   ============================================================ */
+.vista-rapida-caja:not(.producto-en-oferta){
+  border-color:rgba(255,255,255,.22);
+  animation:none;
+}
+.vista-rapida-caja:not(.producto-en-oferta) .vista-rapida-precio{
+  border-color:rgba(255,255,255,.28);
+  background:none;
+  color:#fff;
+  animation:none;
+}
+.vista-rapida-caja.producto-en-oferta{
+  border-color:#8a6a1f;
+  animation:brillo-marco-dorado 3s linear infinite;
+}
+.vista-rapida-caja.producto-en-oferta .vista-rapida-precio{
+  border-color:#d4af37;
+  background:linear-gradient(110deg,#8a6a1f 0%,#f5d67c 20%,#fff6da 35%,#f5d67c 50%,#8a6a1f 70%,#f5d67c 85%,#8a6a1f 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:brillo-dorado 3s linear infinite;
+}
+
+/* El botón de volver arriba nunca debe cubrir el panel de administración. */
+.admin-modal-fondo ~ #btnVolverArriba,
+#btnVolverArriba{
+  z-index:70;
+}
+
+/* ============================================================
+   CORRECCIÓN DEFINITIVA: botón "volver arriba" vs. administrador
+   - El botón de subir queda por debajo del botón de administración.
+   - Cuando el panel de administrador está abierto, desaparece para
+     no cubrir ningún control del panel.
+   ============================================================ */
+.btn-volver-arriba{
+  z-index:50 !important;
+}
+.btn-admin{
+  z-index:60 !important;
+}
+body:has(.admin-modal-fondo.visible) #btnVolverArriba{
+  opacity:0 !important;
+  pointer-events:none !important;
+  visibility:hidden;
+}
+
+/* ============================================================
+   AJUSTE FINAL: separar físicamente los botones flotantes
+   - Administrador queda abajo a la derecha.
+   - Volver arriba queda encima, sin superponerse.
+   - Al abrir el administrador, Volver arriba se oculta.
+   ============================================================ */
+.btn-admin{
+  right:16px !important;
+  bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index:1001 !important;
+}
+
+.btn-volver-arriba{
+  right:16px !important;
+  bottom:calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index:1000 !important;
+}
+
+body:has(#modalAdminFondo.visible) #btnVolverArriba{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+@media (max-width:620px){
+  .btn-admin{
+    right:12px !important;
+    bottom:calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .btn-volver-arriba{
+    right:12px !important;
+    bottom:calc(60px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
