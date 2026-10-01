@@ -256,7 +256,7 @@
           <div class="admin-shortcuts">
             <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionProductos">Productos</button>
             <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionFormulario">Editor</button>
-            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionApariencia">Apariencia</button>
+            <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionApariencia">Apariencia</button><button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionTemas">Temas</button>
             <button type="button" class="admin-shortcut" data-admin-scroll="adminSeccionPublicar">Publicar</button>
           </div>
         </div>
@@ -373,6 +373,26 @@
             </div>
           </section>
 
+          <section class="admin-section" id="adminSeccionTemas">
+            <div class="admin-section-head compact">
+              <div><span class="admin-section-kicker">TEMPORADA</span><h3>Temas de la tienda</h3><p>Cambia la estética sin alterar la estructura ni la esencia original.</p></div>
+            </div>
+            <div class="admin-appearance-card admin-theme-card">
+              <div class="admin-theme-options" role="radiogroup" aria-label="Tema de la tienda">
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="original" checked><span class="admin-theme-swatch original" aria-hidden="true"></span><span><strong>Original</strong><br><small>Estilo actual de Antonio's Store.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="halloween"><span class="admin-theme-swatch halloween" aria-hidden="true"></span><span><strong>Halloween</strong><br><small>Oscuro, naranja y violeta.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="navidad"><span class="admin-theme-swatch navidad" aria-hidden="true"></span><span><strong>Navideño</strong><br><small>Rojo, verde y dorado.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="cyberpunk"><span class="admin-theme-swatch cyberpunk" aria-hidden="true"></span><span><strong>Cyberpunk</strong><br><small>Neón, oscuro y tecnológico.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="oceano"><span class="admin-theme-swatch oceano" aria-hidden="true"></span><span><strong>Océano</strong><br><small>Azules profundos y turquesa.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="aurora"><span class="admin-theme-swatch aurora" aria-hidden="true"></span><span><strong>Aurora</strong><br><small>Verde, azul y violeta suave.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="ano-nuevo"><span class="admin-theme-swatch ano-nuevo" aria-hidden="true"></span><span><strong>Año Nuevo</strong><br><small>Negro, dorado y champagne.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="deluxe"><span class="admin-theme-swatch deluxe" aria-hidden="true"></span><span><strong>Deluxe</strong><br><small>Negro, dorado y elegante.</small></span></label>
+                <label class="admin-theme-option"><input type="radio" name="temaTienda" value="retro"><span class="admin-theme-swatch retro" aria-hidden="true"></span><span><strong>Retro Ochentero</strong><br><small>Neón, púrpura y energía 80s.</small></span></label>
+              </div>
+              <div class="admin-theme-actions"><p id="estadoTema" class="admin-theme-status">Tema original activo.</p></div>
+            </div>
+          </section>
+
           <section class="admin-section" id="adminSeccionPublicar">
             <div class="admin-section-head compact">
               <div>
@@ -400,6 +420,31 @@
 <!-- ============ BIENVENIDA CON FUEGOS ARTIFICIALES ============ -->
 <div class="capa-bienvenida" id="capaBienvenida" hidden="">
   <canvas id="lienzoFuegos" aria-hidden="true"></canvas>
+  <div class="retro-stage" aria-hidden="true">
+    <div class="retro-sun"><span></span></div>
+    <div class="retro-horizon-glow"></div>
+    <div class="retro-grid"></div>
+    <div class="retro-palm palm-a"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div><div class="retro-palm palm-b"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div><div class="retro-palm palm-c"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div>
+    <div class="retro-palm palm-d"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div><div class="retro-palm palm-e"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div><div class="retro-palm palm-f"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div>
+    <div class="retro-palm palm-g"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div><div class="retro-palm palm-h"><span class="palm-crown" aria-hidden="true">
+      <i class="leaf leaf-1"></i><i class="leaf leaf-2"></i><i class="leaf leaf-3"></i><i class="leaf leaf-4"></i><i class="leaf leaf-5"></i><i class="leaf leaf-6"></i><i class="leaf leaf-7"></i><i class="leaf leaf-8"></i><i class="leaf leaf-9"></i>
+    </span></div>
+    <div class="retro-scanlines"></div>
+  </div>
   <div class="bloque-bienvenida">
     <p class="texto-bienvenida">¡Bienvenido a Antonio's Store!</p>
     <p class="eslogan-bienvenida">Calidad y Confiabilidad</p>
@@ -428,6 +473,11 @@
       localStorage.setItem('tienda_fondo_v1', estadoPublicado.fondo);
     } else {
       localStorage.removeItem('tienda_fondo_v1');
+    }
+    if (['original','halloween','navidad'].includes(estadoPublicado.tema)) {
+      localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
+    } else {
+      localStorage.removeItem('tienda_tema_v1');
     }
   } catch(e) {
     console.warn('No se pudo cargar el estado publicado:', e);

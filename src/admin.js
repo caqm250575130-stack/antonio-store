@@ -51,17 +51,42 @@ const btnAnadirCat  = $('btnAnadirCategoria');
 const CLAVE_CATEGORIAS = 'tienda_categorias_v1'; // misma clave que usa script.js
 const CLAVE_CAT_OCULTAS = 'tienda_categorias_ocultas_v1'; // categorías del HTML que se eliminaron
 const CLAVE_FONDO   = 'tienda_fondo_v1'; // misma clave que usa script.js
+const CLAVE_TEMA    = 'tienda_tema_v1';
+const TEMAS_VALIDOS = ['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','retro'];
 
 const campoFondoAdmin    = $('campoFondoAdmin');
 const previaFondoAdmin   = $('previaFondoAdmin');
 const btnGuardarFondo    = $('btnGuardarFondo');
 const btnRestablecerFondo = $('btnRestablecerFondo');
+const opcionesTema        = [...document.querySelectorAll('input[name="temaTienda"]')];
+const estadoTema          = $('estadoTema');
 const btnGuardarIndex     = $('btnGuardarIndex');
 const estadoGuardarIndex  = $('estadoGuardarIndex');
 let fondoNuevo = ''; // imagen de fondo recién elegida, pendiente de guardar
 
 let sesionAbierta = false;  // solo dura mientras el panel actual está abierto
 let imagenActual  = '';     // foto (en base64) del producto que se está editando
+
+/* ============================================================
+   TEMA ESTACIONAL
+   ============================================================ */
+function normalizarTema(tema){ return TEMAS_VALIDOS.includes(tema) ? tema : 'original'; }
+function leerTema(){ try{return normalizarTema(localStorage.getItem(CLAVE_TEMA)||'original')}catch(e){return 'original'} }
+function aplicarTema(tema){
+  const valor=normalizarTema(tema);
+  document.documentElement.classList.remove('tema-halloween','tema-navidad','tema-cyberpunk','tema-oceano','tema-aurora','tema-ano-nuevo','tema-deluxe','tema-retro');
+  if(valor!=='original') document.documentElement.classList.add('tema-'+valor);
+  opcionesTema.forEach(input=>{input.checked=input.value===valor;input.closest('.admin-theme-option')?.classList.toggle('activo',input.value===valor)});
+  if(estadoTema) estadoTema.textContent=valor==='original'?'Tema original activo.':({halloween:'Tema Halloween activo.',navidad:'Tema Navideño activo.',cyberpunk:'Tema Cyberpunk activo.',oceano:'Tema Océano activo.',aurora:'Tema Aurora activo.','ano-nuevo':'Tema Año Nuevo activo.',deluxe:'Tema Deluxe activo.',retro:'Tema Retro Ochentero activo.'}[valor]||'Tema activo.');
+  return valor;
+}
+function guardarTema(tema){
+  const valor=normalizarTema(tema);
+  try{localStorage.setItem(CLAVE_TEMA,valor)}catch(e){alert('No se pudo guardar el tema en este navegador.');return false}
+  aplicarTema(valor);return true;
+}
+function cargarTemaEnPanel(){aplicarTema(leerTema())}
+opcionesTema.forEach(input=>input.addEventListener('change',()=>{if(input.checked) guardarTema(input.value)}));
 
 /* ============================================================
    1. CATÁLOGO: leer, construir desde el HTML y guardar
@@ -831,6 +856,7 @@ function leerEstadoParaPublicar(){
   let categorias = [];
   let categoriasOcultas = [];
   let fondo = '';
+  let tema = 'original';
 
   try {
     catalogo = JSON.parse(localStorage.getItem(CLAVE) || '[]') || [];
@@ -855,11 +881,12 @@ function leerEstadoParaPublicar(){
   } catch(e) {
     fondo = '';
   }
+  try { tema = leerTema(); } catch(e) { tema = 'original'; }
 
   // Si nunca hubo un guardado del catálogo, usa el estado visible actual.
   if(!catalogo.length) catalogo = catalogoDesdeHTML();
 
-  return { catalogo, categorias, categoriasOcultas, fondo };
+  return { catalogo, categorias, categoriasOcultas, fondo, tema };
 }
 
 function construirIndexPublicado(){
@@ -896,6 +923,8 @@ function construirIndexPublicado(){
     } else {
       localStorage.removeItem('tienda_fondo_v1');
     }
+    if (TEMAS_VALIDOS.includes(estadoPublicado.tema)) localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
+    else localStorage.removeItem('tienda_tema_v1');
   } catch(e) {
     console.warn('No se pudo cargar el estado publicado:', e);
   }
@@ -970,6 +999,7 @@ function abrirPanel(){
   limpiarFormulario();
   dibujarListaAdmin();
   cargarFondoEnPanel();
+  cargarTemaEnPanel();
   abrirModal(modalAdmin);
 }
 

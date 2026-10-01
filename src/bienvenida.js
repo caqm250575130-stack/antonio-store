@@ -1,149 +1,26 @@
-/* ============================================================
-   BIENVENIDA CON FUEGOS ARTIFICIALES
-   ------------------------------------------------------------
-   Al hacer clic en el logo negro del encabezado aparece una
-   capa oscura con el mensaje "¡Bienvenido a Antonio's Store!"
-   y fuegos artificiales dibujados en un canvas.
-   Se cierra solo a los ~5 segundos, o antes si se hace clic
-   o se pulsa Escape.
-   ============================================================ */
 (function(){
 'use strict';
-
-const logo   = document.querySelector('.logo');
-const capa   = document.getElementById('capaBienvenida');
-const lienzo = document.getElementById('lienzoFuegos');
-if(!logo || !capa || !lienzo) return;
-
-const ctx = lienzo.getContext('2d');
-const menosAnimacion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-const COLORES  = ['#25f4ee','#e1306c','#ffd166','#25d366','#8a7bff','#ffffff','#ff7b39','#2f4fbd'];
-const DURACION = 5000;   // milisegundos que dura el espectáculo
-
-let particulas = [];
-let animando   = false;
-let idCuadro   = 0;
-let idLanzador = 0;
-let idCierre   = 0;
-
-/* ---------- Ajusta el canvas al tamaño real de la pantalla ---------- */
-function ajustarLienzo(){
-  const escala = window.devicePixelRatio || 1;
-  lienzo.width  = Math.floor(window.innerWidth  * escala);
-  lienzo.height = Math.floor(window.innerHeight * escala);
-  ctx.setTransform(escala, 0, 0, escala, 0, 0);
-}
-
-/* ---------- Una explosión: muchas chispas saliendo de un punto ---------- */
-function explotar(x, y){
-  const color = COLORES[Math.floor(Math.random() * COLORES.length)];
-  const total = 46 + Math.floor(Math.random() * 30);
-  for(let i = 0; i < total; i++){
-    const angulo = (Math.PI * 2 * i) / total + Math.random() * 0.25;
-    const rapidez = 2 + Math.random() * 4.5;
-    particulas.push({
-      x, y,
-      vx: Math.cos(angulo) * rapidez,
-      vy: Math.sin(angulo) * rapidez,
-      vida: 1,
-      desgaste: 0.008 + Math.random() * 0.012,
-      radio: 1.5 + Math.random() * 2,
-      color: Math.random() < 0.15 ? '#ffffff' : color
-    });
-  }
-}
-
-/* Lanza una explosión en un punto al azar de la mitad superior */
-function explosionAlAzar(){
-  const x = window.innerWidth  * (0.12 + Math.random() * 0.76);
-  const y = window.innerHeight * (0.12 + Math.random() * 0.45);
-  explotar(x, y);
-}
-
-/* ---------- Dibujo cuadro a cuadro ---------- */
-function cuadro(){
-  const an = window.innerWidth, al = window.innerHeight;
-
-  // velo semitransparente: deja estela detrás de las chispas
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = 'rgba(3,4,10,.22)';
-  ctx.fillRect(0, 0, an, al);
-
-  ctx.globalCompositeOperation = 'lighter';
-  for(const p of particulas){
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.045;          // gravedad
-    p.vx *= 0.99;
-    p.vy *= 0.99;           // rozamiento del aire
-    p.vida -= p.desgaste;
-    if(p.vida <= 0) continue;
-
-    ctx.globalAlpha = Math.max(0, p.vida);
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radio * p.vida + 0.3, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  particulas = particulas.filter(p => p.vida > 0);
-
-  ctx.globalAlpha = 1;
-  ctx.globalCompositeOperation = 'source-over';
-
-  if(animando) idCuadro = requestAnimationFrame(cuadro);
-}
-
-/* ---------- Abrir y cerrar ---------- */
-function abrirBienvenida(){
-  if(capa.classList.contains('visible')) return;
-
-  capa.hidden = false;
-  // forzar reflow para que la transición de opacidad se note
-  void capa.offsetWidth;
-  capa.classList.add('visible');
-
-  if(!menosAnimacion){
-    ajustarLienzo();
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    particulas = [];
-    animando = true;
-    idCuadro = requestAnimationFrame(cuadro);
-
-    // primeras explosiones escalonadas
-    explosionAlAzar();
-    setTimeout(explosionAlAzar, 220);
-    setTimeout(explosionAlAzar, 460);
-    idLanzador = setInterval(explosionAlAzar, 520);
-  }
-
-  idCierre = setTimeout(cerrarBienvenida, DURACION);
-}
-
-function cerrarBienvenida(){
-  if(!capa.classList.contains('visible')) return;
-
-  clearTimeout(idCierre);
-  clearInterval(idLanzador);
-  capa.classList.remove('visible');
-
-  setTimeout(() => {
-    animando = false;
-    cancelAnimationFrame(idCuadro);
-    particulas = [];
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    capa.hidden = true;
-  }, 460);   // espera a que termine el desvanecido
-}
-
-/* ---------- Eventos ---------- */
-logo.addEventListener('click', abrirBienvenida);
-logo.addEventListener('keydown', e => {
-  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrirBienvenida(); }
-});
-capa.addEventListener('click', cerrarBienvenida);
-document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarBienvenida(); });
-window.addEventListener('resize', () => { if(animando) ajustarLienzo(); });
-
+const logo=document.querySelector('.logo'),capa=document.getElementById('capaBienvenida'),lienzo=document.getElementById('lienzoFuegos');
+if(!logo||!capa||!lienzo)return;
+const ctx=lienzo.getContext('2d'),reducida=matchMedia('(prefers-reduced-motion: reduce)').matches,DURACION=5000;
+let ps=[],animando=false,raf=0,intervalo=0,cierre=0,temaActual='original';
+const tema=()=>{const c=document.documentElement.classList;if(c.contains('tema-halloween'))return'halloween';if(c.contains('tema-navidad'))return'navidad';if(c.contains('tema-cyberpunk'))return'cyberpunk';if(c.contains('tema-oceano'))return'oceano';if(c.contains('tema-aurora'))return'aurora';if(c.contains('tema-ano-nuevo'))return'ano-nuevo';if(c.contains('tema-deluxe'))return'deluxe';if(c.contains('tema-retro'))return'retro';return'original'};
+function resize(){const d=devicePixelRatio||1;lienzo.width=innerWidth*d;lienzo.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0)}
+function spark(x,y,colors,n=55){const col=colors[Math.floor(Math.random()*colors.length)];for(let i=0;i<n;i++){const a=Math.PI*2*i/n+Math.random()*.22,r=2+Math.random()*4.5;ps.push({t:'s',x,y,vx:Math.cos(a)*r,vy:Math.sin(a)*r,life:1,dec:.009+Math.random()*.012,r:1.3+Math.random()*2,c:Math.random()<.15?'#fff':col})}}
+function spawn(){const t=temaActual;
+ if(t==='original'){spark(innerWidth*(.12+Math.random()*.76),innerHeight*(.12+Math.random()*.45),['#25f4ee','#e1306c','#ffd166','#25d366','#8a7bff','#fff','#ff7b39']);return}
+ if(t==='halloween'){const x=innerWidth*(.1+Math.random()*.8),y=innerHeight*(.15+Math.random()*.55);spark(x,y,['#ff8a1f','#7a3cff'],34);for(let i=0;i<5;i++)ps.push({t:'o',x:x+(Math.random()-.5)*180,y:y+(Math.random()-.5)*100,vx:(Math.random()-.5)*.5,vy:-.4-Math.random()*.5,life:1,dec:.004,r:3+Math.random()*5,c:i%2?'#7a3cff':'#ff8a1f'});return}
+ if(t==='navidad'){for(let i=0;i<28;i++)ps.push({t:'n',x:Math.random()*innerWidth,y:-10-Math.random()*innerHeight*.2,vx:(Math.random()-.5)*.45,vy:.7+Math.random()*1.3,life:1,dec:.002,r:1.5+Math.random()*2,c:Math.random()<.75?'#fff':'#e9d99a'});spark(innerWidth*(.2+Math.random()*.6),innerHeight*(.15+Math.random()*.35),['#d8b24c','#fff','#b51f2b'],30);return}
+ if(t==='cyberpunk'){const x=innerWidth*(.05+Math.random()*.9),y=innerHeight*(.15+Math.random()*.7);for(let i=0;i<18;i++)ps.push({t:'l',x:x+(Math.random()-.5)*180,y:y+(Math.random()-.5)*120,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,life:1,dec:.015,r:1+Math.random()*2,c:i%2?'#ff2bd6':'#00f5ff'});return}
+ if(t==='oceano'){for(let i=0;i<11;i++)ps.push({t:'b',x:Math.random()*innerWidth,y:innerHeight+20,vx:(Math.random()-.5)*.5,vy:-.7-Math.random()*1.2,life:1,dec:.002,r:4+Math.random()*10,c:i%2?'#2ee6d6':'#168cff'});return}
+ if(t==='aurora'){for(let i=0;i<20;i++)ps.push({t:'o',x:Math.random()*innerWidth,y:innerHeight*(.2+Math.random()*.7),vx:(Math.random()-.5)*.7,vy:(Math.random()-.5)*.25,life:1,dec:.003,r:3+Math.random()*9,c:['#72f5b2','#6e7cff','#b18cff'][i%3]});return}
+ if(t==='ano-nuevo'){spark(innerWidth*(.15+Math.random()*.7),innerHeight*(.12+Math.random()*.48),['#e9c66a','#fff6dc','#f4a65a','#fff'],55);for(let i=0;i<18;i++)ps.push({t:'c',x:Math.random()*innerWidth,y:-10-Math.random()*100,vx:(Math.random()-.5)*1.4,vy:1+Math.random()*2,life:1,dec:.003,r:2+Math.random()*2,c:i%2?'#e9c66a':'#fff6dc'});return}
+ if(t==='deluxe'){for(let i=0;i<34;i++)ps.push({t:'g',x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.45,vx:(Math.random()-.5)*.45,vy:2.2+Math.random()*3.8,life:1,dec:.0025+Math.random()*.002,r:1.2+Math.random()*2.8,c:['#f7d774','#e6b93f','#fff1b0','#c99728'][i%4]});const x=innerWidth*(.18+Math.random()*.64),y=innerHeight*(.13+Math.random()*.38);spark(x,y,['#f7d774','#fff1b0','#e6b93f'],28);return}
+ if(t==='retro'){const x=innerWidth*(.18+Math.random()*.64),y=innerHeight*(.10+Math.random()*.34);for(let i=0;i<14;i++)ps.push({t:'l',x:x+(Math.random()-.5)*320,y:y+(Math.random()-.5)*150,vx:(Math.random()-.5)*5.5,vy:(Math.random()-.5)*4.5,life:1,dec:.018+Math.random()*.01,r:.7+Math.random()*1.7,c:i%4===0?'#fff':(i%2?'#00eaff':'#ff3fbf')});for(let i=0;i<3;i++)ps.push({t:'l',x:Math.random()*innerWidth,y:Math.random()*innerHeight*.42,vx:4+Math.random()*4,vy:-.5+Math.random(),life:1,dec:.012,r:.6+Math.random(),c:i%2?'#ff3fbf':'#00eaff'});return}}
+function draw(){const w=innerWidth,h=innerHeight;ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.fillStyle=temaActual==='retro'?'rgba(10,3,25,.22)':temaActual==='deluxe'?'rgba(18,12,3,.20)':temaActual==='navidad'?'rgba(2,10,8,.18)':temaActual==='oceano'?'rgba(2,12,18,.18)':'rgba(3,4,10,.22)';ctx.fillRect(0,0,w,h);
+if(temaActual==='deluxe'){ctx.globalCompositeOperation='lighter';const glow=ctx.createRadialGradient(w*.5,h*.28,10,w*.5,h*.28,Math.max(w,h)*.45);glow.addColorStop(0,'rgba(255,220,120,.10)');glow.addColorStop(1,'rgba(255,190,40,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,w,h)}
+ctx.globalCompositeOperation='lighter';for(const p of ps){p.x+=p.vx;p.y+=p.vy;if(p.t==='s'){p.vy+=.035;p.vx*=.99;p.vy*=.99}else if(p.t==='n'||p.t==='c'){p.vx+=Math.sin(p.y*.02)*.008}else if(p.t==='b'){p.vx+=Math.sin(p.y*.02)*.008}else if(p.t==='l'){p.vx*=.985;p.vy*=.985}else if(p.t==='o'){p.vx*=.995}else if(p.t==='g'){p.vy+=.012;p.vx*=.997}p.life-=p.dec;if(p.life<=0)continue;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;ctx.strokeStyle=p.c;if(p.t==='b'){ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.stroke()}else if(p.t==='l'){ctx.lineWidth=p.r;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*10,p.y-p.vy*10);ctx.stroke()}else if(p.t==='g'){ctx.lineWidth=p.r;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*2,p.y-p.vy*5);ctx.stroke();ctx.beginPath();ctx.arc(p.x,p.y,p.r*.75,0,Math.PI*2);ctx.fill()}else if(p.t==='c'){ctx.fillRect(p.x,p.y,p.r*2,p.r*5)}else{ctx.beginPath();ctx.arc(p.x,p.y,p.r*(.35+.65*p.life),0,Math.PI*2);ctx.fill()}}ps=ps.filter(p=>p.life>0&&p.y<h+70&&p.x>-70&&p.x<w+70);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';if(animando)raf=requestAnimationFrame(draw)}
+function abrir(){if(capa.classList.contains('visible'))return;capa.hidden=false;void capa.offsetWidth;capa.classList.add('visible');temaActual=tema();if(!reducida){resize();ctx.clearRect(0,0,innerWidth,innerHeight);ps=[];animando=true;raf=requestAnimationFrame(draw);spawn();setTimeout(spawn,220);setTimeout(spawn,460);intervalo=setInterval(spawn,520)}cierre=setTimeout(cerrar,DURACION)}
+function cerrar(){if(!capa.classList.contains('visible'))return;clearTimeout(cierre);clearInterval(intervalo);capa.classList.remove('visible');setTimeout(()=>{animando=false;cancelAnimationFrame(raf);ps=[];ctx.clearRect(0,0,innerWidth,innerHeight);capa.hidden=true},460)}
+logo.addEventListener('click',abrir);logo.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();abrir()}});capa.addEventListener('click',cerrar);document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrar()});addEventListener('resize',()=>{if(animando)resize()});
 })();
