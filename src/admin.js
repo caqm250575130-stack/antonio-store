@@ -923,8 +923,10 @@ function construirIndexPublicado(){
     } else {
       localStorage.removeItem('tienda_fondo_v1');
     }
-    if (TEMAS_VALIDOS.includes(estadoPublicado.tema)) localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
-    else localStorage.removeItem('tienda_tema_v1');
+    if (Object.prototype.hasOwnProperty.call(estadoPublicado, 'tema')) {
+      if (['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','retro'].includes(estadoPublicado.tema)) localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
+      else localStorage.removeItem('tienda_tema_v1');
+    }
   } catch(e) {
     console.warn('No se pudo cargar el estado publicado:', e);
   }
