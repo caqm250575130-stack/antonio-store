@@ -52,7 +52,7 @@ const CLAVE_CATEGORIAS = 'tienda_categorias_v1'; // misma clave que usa script.j
 const CLAVE_CAT_OCULTAS = 'tienda_categorias_ocultas_v1'; // categorías del HTML que se eliminaron
 const CLAVE_FONDO   = 'tienda_fondo_v1'; // misma clave que usa script.js
 const CLAVE_TEMA    = 'tienda_tema_v1';
-const TEMAS_VALIDOS = ['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','retro'];
+const TEMAS_VALIDOS = ['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','vice','zelda'];
 
 const campoFondoAdmin    = $('campoFondoAdmin');
 const previaFondoAdmin   = $('previaFondoAdmin');
@@ -70,14 +70,14 @@ let imagenActual  = '';     // foto (en base64) del producto que se está editan
 /* ============================================================
    TEMA ESTACIONAL
    ============================================================ */
-function normalizarTema(tema){ return TEMAS_VALIDOS.includes(tema) ? tema : 'original'; }
+function normalizarTema(tema){ if(tema==='retro') tema='vice'; return TEMAS_VALIDOS.includes(tema) ? tema : 'original'; }
 function leerTema(){ try{return normalizarTema(localStorage.getItem(CLAVE_TEMA)||'original')}catch(e){return 'original'} }
 function aplicarTema(tema){
   const valor=normalizarTema(tema);
-  document.documentElement.classList.remove('tema-halloween','tema-navidad','tema-cyberpunk','tema-oceano','tema-aurora','tema-ano-nuevo','tema-deluxe','tema-retro');
+  document.documentElement.classList.remove('tema-halloween','tema-navidad','tema-cyberpunk','tema-oceano','tema-aurora','tema-ano-nuevo','tema-deluxe','tema-vice','tema-zelda');
   if(valor!=='original') document.documentElement.classList.add('tema-'+valor);
   opcionesTema.forEach(input=>{input.checked=input.value===valor;input.closest('.admin-theme-option')?.classList.toggle('activo',input.value===valor)});
-  if(estadoTema) estadoTema.textContent=valor==='original'?'Tema original activo.':({halloween:'Tema Halloween activo.',navidad:'Tema Navideño activo.',cyberpunk:'Tema Cyberpunk activo.',oceano:'Tema Océano activo.',aurora:'Tema Aurora activo.','ano-nuevo':'Tema Año Nuevo activo.',deluxe:'Tema Deluxe activo.',retro:'Tema Retro Ochentero activo.'}[valor]||'Tema activo.');
+  if(estadoTema) estadoTema.textContent=valor==='original'?'Tema original activo.':({halloween:'Tema Halloween activo.',navidad:'Tema Navideño activo.',cyberpunk:'Tema Cyberpunk activo.',oceano:'Tema Océano activo.',aurora:'Tema Aurora activo.','ano-nuevo':'Tema Año Nuevo activo.',deluxe:'Tema Deluxe activo.',vice:'Tema Vice City (GTA VI) activo.',zelda:'Tema Hyrule (Ocarina of Time) activo.'}[valor]||'Tema activo.');
   return valor;
 }
 function guardarTema(tema){
@@ -924,7 +924,7 @@ function construirIndexPublicado(){
       localStorage.removeItem('tienda_fondo_v1');
     }
     if (Object.prototype.hasOwnProperty.call(estadoPublicado, 'tema')) {
-      if (['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','retro'].includes(estadoPublicado.tema)) localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
+      if (['original','halloween','navidad','cyberpunk','oceano','aurora','ano-nuevo','deluxe','retro','vice','zelda'].includes(estadoPublicado.tema)) localStorage.setItem('tienda_tema_v1', estadoPublicado.tema);
       else localStorage.removeItem('tienda_tema_v1');
     }
   } catch(e) {

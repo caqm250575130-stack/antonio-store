@@ -28,21 +28,13 @@
    ============================================================ */
 
 html.tema-deluxe{--fondo:#08090c;--panel:rgba(18,19,23,.82);--borde:#fff4cf;--texto-suave:#ded8c8;--cyan:#e8c66b;--azul:#9b7a2e}
-html.tema-retro{--fondo:#0b0716;--panel:rgba(17,10,30,.82);--borde:#ffe8ff;--texto-suave:#d9c5e8;--cyan:#00f5ff;--azul:#ff3dbd}
 html.tema-deluxe .encabezado{border-bottom-color:rgba(232,198,107,.65)}
 html.tema-deluxe .linea-rgb{background:linear-gradient(90deg,#6f5420,#e8c66b,#fff4cf,#e8c66b,#6f5420)}
 html.tema-deluxe .producto[data-categoria~="ofertas"]{border-color:#e8c66b;box-shadow:0 0 0 1px rgba(232,198,107,.18),0 0 26px rgba(232,198,107,.15);animation:brillo-marco-deluxe 3.8s ease-in-out infinite}
 html.tema-deluxe .producto[data-categoria~="ofertas"] .precio{border-color:#e8c66b;background:linear-gradient(110deg,#8c671d,#e8c66b,#fff4cf,#fff,#e8c66b,#8c671d);background-size:280% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo-tema-oferta 3.5s linear infinite}
 @keyframes brillo-marco-deluxe{0%,100%{border-color:#9c7625;box-shadow:0 0 0 1px rgba(232,198,107,.12),0 0 12px rgba(232,198,107,.08)}50%{border-color:#fff4cf;box-shadow:0 0 0 1px rgba(255,244,207,.2),0 0 28px rgba(232,198,107,.2)}}
-html.tema-retro .encabezado{border-bottom-color:rgba(255,61,189,.62)}
-html.tema-retro .linea-rgb{background:linear-gradient(90deg,#ff3dbd,#7c4dff,#00f5ff,#ff3dbd)}
-html.tema-retro .producto[data-categoria~="ofertas"]{border-color:#00f5ff;box-shadow:0 0 0 1px rgba(0,245,255,.18),0 0 24px rgba(255,61,189,.17);animation:brillo-marco-retro 2.2s linear infinite}
-html.tema-retro .producto[data-categoria~="ofertas"] .precio{border-color:#ff3dbd;background:linear-gradient(110deg,#00f5ff,#fff,#ff3dbd,#9b5cff,#00f5ff);background-size:260% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo-tema-oferta 2s linear infinite}
-@keyframes brillo-marco-retro{0%,100%{border-color:#00f5ff}33%{border-color:#ff3dbd}66%{border-color:#9b5cff}}
 html.tema-deluxe .categorias,html.tema-deluxe .buscador input{border-color:rgba(232,198,107,.38)}
-html.tema-retro .categorias,html.tema-retro .buscador input{border-color:rgba(0,245,255,.4)}
 .admin-theme-swatch.deluxe{background:linear-gradient(90deg,#08090c,#9c7625,#fff4cf,#e8c66b)}
-.admin-theme-swatch.retro{background:linear-gradient(90deg,#0b0716,#ff3dbd,#7c4dff,#00f5ff)}
 html.tema-halloween{--fondo:#08060b;--panel:rgba(15,9,18,.76);--borde:#f1e9f7;--texto-suave:#d6c7df;--cyan:#ff8a1f;--azul:#7a3cff}
 html.tema-navidad{--fondo:#070b0a;--panel:rgba(7,16,13,.76);--borde:#f4f1e8;--texto-suave:#d5ddd7;--cyan:#d8b24c;--azul:#1d6b45}
 html.tema-cyberpunk{--fondo:#05070d;--panel:rgba(8,10,20,.78);--borde:#dffcff;--texto-suave:#b8d9e5;--cyan:#00f5ff;--azul:#ff2bd6}
@@ -96,16 +88,9 @@ html.tema-ano-nuevo .categorias,html.tema-ano-nuevo .buscador input{border-color
 @media (max-width:620px){.admin-theme-options{grid-template-columns:1fr}.admin-theme-option{display:grid;grid-template-columns:82px 1fr;column-gap:10px;align-items:center}.admin-theme-swatch{grid-row:1 / span 2;height:42px}}
 
 @media (max-width:700px){
-  .retro-sun{top:25%;width:190px;height:190px;min-width:120px;min-height:120px}
-  .retro-grid{top:67%;height:36%;background-size:100% 24px,58px 100%;opacity:.32}
-  .retro-palm .palm-crown{width:112px;height:90px}.retro-palm .palm-crown:before,.retro-palm .palm-crown:after{width:72px;height:17px;border-top-width:4px}
-  .retro-palm.palm-a{left:0;height:29%}.retro-palm.palm-d{right:0;height:30%}
-  .retro-palm.palm-b{left:12%;height:20%}.retro-palm.palm-e{right:12%;height:21%}
-  .retro-palm.palm-c,.retro-palm.palm-f{opacity:.4}
-  .retro-palm.palm-g,.retro-palm.palm-h{opacity:.24}
 }
 
-@media (prefers-reduced-motion:reduce){html.tema-halloween .producto[data-categoria~="ofertas"],html.tema-navidad .producto[data-categoria~="ofertas"],html.tema-cyberpunk .producto[data-categoria~="ofertas"],html.tema-oceano .producto[data-categoria~="ofertas"],html.tema-aurora .producto[data-categoria~="ofertas"],html.tema-ano-nuevo .producto[data-categoria~="ofertas"]{animation:none},html.tema-deluxe .producto[data-categoria~="ofertas"],html.tema-retro .producto[data-categoria~="ofertas"]{animation:none}html.tema-halloween .producto[data-categoria~="ofertas"] .precio,html.tema-navidad .producto[data-categoria~="ofertas"] .precio,html.tema-cyberpunk .producto[data-categoria~="ofertas"] .precio,html.tema-oceano .producto[data-categoria~="ofertas"] .precio,html.tema-aurora .producto[data-categoria~="ofertas"] .precio,html.tema-ano-nuevo .producto[data-categoria~="ofertas"] .precio{animation:none},html.tema-deluxe .producto[data-categoria~="ofertas"] .precio,html.tema-retro .producto[data-categoria~="ofertas"] .precio{animation:none}}
+@media (prefers-reduced-motion:reduce){html.tema-halloween .producto[data-categoria~="ofertas"],html.tema-navidad .producto[data-categoria~="ofertas"],html.tema-cyberpunk .producto[data-categoria~="ofertas"],html.tema-oceano .producto[data-categoria~="ofertas"],html.tema-aurora .producto[data-categoria~="ofertas"],html.tema-ano-nuevo .producto[data-categoria~="ofertas"]{animation:none},html.tema-deluxe .producto[data-categoria~="ofertas"]{animation:none}html.tema-halloween .producto[data-categoria~="ofertas"] .precio,html.tema-navidad .producto[data-categoria~="ofertas"] .precio,html.tema-cyberpunk .producto[data-categoria~="ofertas"] .precio,html.tema-oceano .producto[data-categoria~="ofertas"] .precio,html.tema-aurora .producto[data-categoria~="ofertas"] .precio,html.tema-ano-nuevo .producto[data-categoria~="ofertas"] .precio{animation:none},html.tema-deluxe .producto[data-categoria~="ofertas"] .precio .precio{animation:none}}
 
 /* ============================================================
    2. BASE + FONDO ESTRELLADO (generado con CSS, sin imágenes externas)
@@ -303,13 +288,6 @@ a{text-decoration:none;color:inherit}
 }
 
 @media (max-width:700px){
-  .retro-sun{top:25%;width:190px;height:190px;min-width:120px;min-height:120px}
-  .retro-grid{top:67%;height:36%;background-size:100% 24px,58px 100%;opacity:.32}
-  .retro-palm .palm-crown{width:112px;height:90px}.retro-palm .palm-crown:before,.retro-palm .palm-crown:after{width:72px;height:17px;border-top-width:4px}
-  .retro-palm.palm-a{left:0;height:29%}.retro-palm.palm-d{right:0;height:30%}
-  .retro-palm.palm-b{left:12%;height:20%}.retro-palm.palm-e{right:12%;height:21%}
-  .retro-palm.palm-c,.retro-palm.palm-f{opacity:.4}
-  .retro-palm.palm-g,.retro-palm.palm-h{opacity:.24}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -412,13 +390,6 @@ a{text-decoration:none;color:inherit}
 /* Respeta la preferencia de menos animación */
 
 @media (max-width:700px){
-  .retro-sun{top:25%;width:190px;height:190px;min-width:120px;min-height:120px}
-  .retro-grid{top:67%;height:36%;background-size:100% 24px,58px 100%;opacity:.32}
-  .retro-palm .palm-crown{width:112px;height:90px}.retro-palm .palm-crown:before,.retro-palm .palm-crown:after{width:72px;height:17px;border-top-width:4px}
-  .retro-palm.palm-a{left:0;height:29%}.retro-palm.palm-d{right:0;height:30%}
-  .retro-palm.palm-b{left:12%;height:20%}.retro-palm.palm-e{right:12%;height:21%}
-  .retro-palm.palm-c,.retro-palm.palm-f{opacity:.4}
-  .retro-palm.palm-g,.retro-palm.palm-h{opacity:.24}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -569,33 +540,6 @@ a{text-decoration:none;color:inherit}
 .capa-bienvenida.visible{opacity:1;pointer-events:auto}
 .capa-bienvenida canvas{position:absolute;inset:0;width:100%;height:100%}
 
-/* ============================================================
-   ESCENA RETRO 80s / SUNSET SYNTHWAVE (solo durante el logo)
-   ============================================================ */
-.retro-stage{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .35s ease}
-.retro-sun{position:absolute;left:50%;top:30%;width:min(25vw,260px);height:min(25vw,260px);min-width:150px;min-height:150px;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(to bottom,#ffe28a 0 20%,#ffb13b 20% 38%,#ff7b56 38% 100%);box-shadow:0 0 35px rgba(255,180,70,.75),0 0 100px rgba(255,80,180,.35)}
-.retro-sun span{position:absolute;left:-4%;right:-4%;bottom:7%;height:54%;background:repeating-linear-gradient(to bottom,transparent 0 10%,rgba(55,7,50,.95) 10% 13%,transparent 13% 19%);opacity:.85}
-.retro-horizon-glow{position:absolute;left:0;right:0;top:65%;height:4px;background:linear-gradient(90deg,transparent,#ff38bd 15%,#00eaff 50%,#ff38bd 85%,transparent);box-shadow:0 0 18px #ff38bd,0 0 28px rgba(0,234,255,.8)}
-.retro-grid{position:absolute;left:-12%;right:-12%;top:66%;height:42%;transform:perspective(300px) rotateX(64deg);transform-origin:top center;background-image:linear-gradient(rgba(0,234,255,.32) 1px,transparent 1px),linear-gradient(90deg,rgba(255,43,214,.38) 1px,transparent 1px);background-size:100% 30px,82px 100%;filter:drop-shadow(0 0 2px rgba(0,234,255,.3));opacity:.38;mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),rgba(0,0,0,.75) 55%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),rgba(0,0,0,.75) 55%,transparent 100%)}
- .retro-palm{position:absolute;bottom:2%;width:7px;height:29%;background:linear-gradient(90deg,#12051d 0%,#24102e 35%,#ff3fbf 58%,#4c135d 100%);border-radius:90% 65% 25% 25%;transform-origin:bottom center;filter:drop-shadow(0 0 5px rgba(255,43,214,.55));z-index:3}
-.retro-palm:before{content:"";position:absolute;left:50%;top:-3px;width:13px;height:13px;border-radius:50%;background:#17051f;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,43,214,.7),0 0 22px rgba(0,234,255,.25)}
-.retro-palm .palm-crown{position:absolute;left:50%;top:-5px;width:150px;height:120px;transform:translate(-50%,-42%);filter:drop-shadow(0 0 4px rgba(255,43,214,.48));z-index:4}
-.retro-palm .palm-crown:before,.retro-palm .palm-crown:after{content:"";position:absolute;left:50%;top:50%;width:96px;height:22px;border-top:5px solid #1a0624;border-radius:100% 12%;transform-origin:0 50%;box-shadow:0 0 5px rgba(255,43,214,.45)}
-.retro-palm .palm-crown:before{transform:rotate(-68deg) skewX(-12deg);box-shadow:0 0 5px rgba(255,43,214,.45),0 0 0 0 #000,0 18px 0 -2px #1a0624,0 36px 0 -4px #1a0624}
-.retro-palm .palm-crown:after{transform:rotate(8deg) skewX(12deg);box-shadow:0 0 5px rgba(0,234,255,.42),0 18px 0 -2px #1a0624,0 36px 0 -4px #1a0624}
-.retro-palm .palm-crown{background:radial-gradient(ellipse at 50% 50%,#ff3fbf 0 3px,transparent 4px),linear-gradient(145deg,transparent 45%,#17051f 46% 49%,transparent 50%),linear-gradient(35deg,transparent 45%,#17051f 46% 49%,transparent 50%);}
-.retro-palm .palm-crown:after{border-top-color:#17051f}
-.retro-palm.palm-a{left:3%;height:34%;transform:rotate(-7deg)}.retro-palm.palm-b{left:14%;height:23%;transform:rotate(5deg);opacity:.82}.retro-palm.palm-c{left:27%;height:18%;transform:rotate(-4deg);opacity:.62}.retro-palm.palm-d{right:3%;height:35%;transform:rotate(7deg)}.retro-palm.palm-e{right:15%;height:24%;transform:rotate(-5deg);opacity:.82}.retro-palm.palm-f{right:28%;height:19%;transform:rotate(4deg);opacity:.62}.retro-palm.palm-g{left:39%;height:14%;opacity:.42}.retro-palm.palm-h{right:39%;height:15%;opacity:.42}
-.retro-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.018) 0 1px,transparent 1px 5px);mix-blend-mode:screen;opacity:.24}
-html.tema-retro .capa-bienvenida .bloque-bienvenida{position:relative;z-index:4;margin-top:-4vh}
-html.tema-retro .capa-bienvenida .texto-bienvenida{font-family:var(--tipo-titulo);font-weight:900;letter-spacing:.015em;text-transform:none;text-shadow:0 0 4px #fff,0 0 16px #ff39c8,0 0 34px #00eaff,3px 3px 0 rgba(255,57,200,.5)}
-html.tema-retro .capa-bienvenida .eslogan-bienvenida{color:#dffcff;text-shadow:0 0 8px #00eaff,0 0 18px #ff39c8}
-html.tema-retro .capa-bienvenida .pista-bienvenida{position:relative;z-index:4;color:rgba(220,245,255,.8);text-shadow:0 0 8px rgba(0,234,255,.55)}
-html.tema-retro .capa-bienvenida.visible .retro-stage{opacity:1}
-@keyframes retroSunPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.035)}}
-@keyframes retroGridMove{from{transform:perspective(260px) rotateX(62deg) translateY(0)}to{transform:perspective(260px) rotateX(62deg) translateY(28px)}}
-html.tema-retro .capa-bienvenida.visible .retro-sun{animation:retroSunPulse 3.2s ease-in-out infinite}
-html.tema-retro .capa-bienvenida.visible .retro-grid{animation:retroGridMove .8s linear infinite}
 
 /* Contenedor que apila el título y el eslogan, centrados en la pantalla */
 .bloque-bienvenida{
@@ -649,13 +593,6 @@ html.tema-retro .capa-bienvenida.visible .retro-grid{animation:retroGridMove .8s
 /* Si el usuario pidió menos animación, solo se muestra el texto */
 
 @media (max-width:700px){
-  .retro-sun{top:25%;width:190px;height:190px;min-width:120px;min-height:120px}
-  .retro-grid{top:67%;height:36%;background-size:100% 24px,58px 100%;opacity:.32}
-  .retro-palm .palm-crown{width:112px;height:90px}.retro-palm .palm-crown:before,.retro-palm .palm-crown:after{width:72px;height:17px;border-top-width:4px}
-  .retro-palm.palm-a{left:0;height:29%}.retro-palm.palm-d{right:0;height:30%}
-  .retro-palm.palm-b{left:12%;height:20%}.retro-palm.palm-e{right:12%;height:21%}
-  .retro-palm.palm-c,.retro-palm.palm-f{opacity:.4}
-  .retro-palm.palm-g,.retro-palm.palm-h{opacity:.24}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -928,49 +865,253 @@ html.tema-retro .capa-bienvenida.visible .retro-grid{animation:retroGridMove .8s
 }
 
 
-/* --- Corrección de hojas de palmera Retro: frondas reconocibles y limpias --- */
-.retro-palm .palm-crown{
-  width:150px;height:120px;
-  position:absolute;left:50%;top:-5px;
-  transform:translate(-50%,-42%);
-  filter:drop-shadow(0 0 5px rgba(255,43,214,.42));
-  z-index:4;
-  background:radial-gradient(circle at 50% 50%,#ff4bc5 0 3px,rgba(255,75,197,.35) 4px,transparent 7px);
+/* ============================================================
+   TEMA HYRULE · inspirado en The Legend of Zelda: Ocarina of Time
+   Paleta: verde bosque, oro sagrado y azul de la Espada Maestra.
+   ============================================================ */
+html.tema-zelda{
+  --fondo:#06120c;--panel:rgba(8,24,16,.84);--borde:#f3e3a6;--texto-suave:#cfe3c3;
+  --cyan:#f2c94c;--azul:#2f7d4a;
+  --tipo-titulo:'Cinzel','Chakra Petch',Georgia,serif;
 }
-.retro-palm .palm-crown:before,
-.retro-palm .palm-crown:after{display:none!important;content:none}
-.retro-palm .palm-crown .leaf{
-  position:absolute;left:50%;top:50%;
-  width:78px;height:19px;
-  display:block;
-  transform-origin:0 50%;
-  border-radius:100% 12% 75% 18%;
-  clip-path:polygon(0 50%,18% 27%,62% 2%,100% 50%,62% 98%,18% 73%);
-  background:linear-gradient(90deg,#21102b 0%,#4a194f 46%,#ff3fbf 88%,#8f2b86 100%);
-  box-shadow:0 0 5px rgba(255,63,191,.45);
-  opacity:.95;
+html.tema-zelda body{
+  background-image:linear-gradient(rgba(4,22,12,.68),rgba(3,14,9,.74)),var(--fondo-img);
 }
-.retro-palm .palm-crown .leaf:nth-child(even){
-  background:linear-gradient(90deg,#21102b 0%,#263a49 44%,#00eaff 88%,#347b90 100%);
-  box-shadow:0 0 5px rgba(0,234,255,.42);
+html.tema-zelda .encabezado{border-bottom-color:rgba(242,201,76,.7)}
+html.tema-zelda .linea-rgb{background:linear-gradient(90deg,#1f6b3a,#f2c94c,#7fd0ff,#f2c94c,#1f6b3a)}
+html.tema-zelda .titulos h1{letter-spacing:.06em}
+html.tema-zelda .producto{border-color:rgba(243,227,166,.55)}
+html.tema-zelda .producto:hover{box-shadow:0 0 24px rgba(242,201,76,.3)}
+html.tema-zelda .producto[data-categoria~="ofertas"]{border-color:#f2c94c;box-shadow:0 0 0 1px rgba(242,201,76,.2),0 0 24px rgba(127,208,255,.14);animation:brillo-marco-zelda 3.6s ease-in-out infinite}
+html.tema-zelda .producto[data-categoria~="ofertas"] .precio{border-color:#f2c94c;background:linear-gradient(110deg,#b8862b,#f2c94c,#fff6cf,#7fd0ff,#f2c94c,#b8862b);background-size:260% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo-tema-oferta 3.2s linear infinite}
+@keyframes brillo-marco-zelda{0%,100%{border-color:#b8862b}50%{border-color:#fff1b8;box-shadow:0 0 0 1px rgba(255,241,184,.25),0 0 30px rgba(242,201,76,.28)}}
+html.tema-zelda .categorias,html.tema-zelda .buscador input{border-color:rgba(242,201,76,.42)}
+html.tema-zelda .categorias button.activa{background:rgba(242,201,76,.2);box-shadow:0 0 14px rgba(242,201,76,.4)}
+html.tema-zelda .categorias button:hover{background:rgba(242,201,76,.14);box-shadow:0 0 16px 2px rgba(242,201,76,.45)}
+.admin-theme-swatch.zelda{background:linear-gradient(90deg,#0a1f14,#2f7d4a,#f2c94c,#7fd0ff)}
+
+/* ---------- Intro: amanecer sobre la llanura de Hyrule ---------- */
+.zelda-stage{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease}
+html.tema-zelda .capa-bienvenida.visible .zelda-stage{opacity:1}
+html.tema-zelda .capa-bienvenida{background:#0a1a2e;backdrop-filter:none}
+html.tema-zelda .capa-bienvenida canvas{z-index:3}
+
+.zl-sky{position:absolute;inset:0;background:linear-gradient(to bottom,#07163a 0%,#17336f 24%,#3f67a8 42%,#d99a6a 62%,#ffd98a 72%,#ffe9b0 76%)}
+.zl-stars{position:absolute;inset:0 0 45%;opacity:.85;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 27% 8%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 41% 22%,#fff,transparent),radial-gradient(1px 1px at 58% 12%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 73% 20%,#fff,transparent),radial-gradient(1px 1px at 86% 9%,#fff,transparent),
+    radial-gradient(1px 1px at 93% 26%,#fff,transparent),radial-gradient(1px 1px at 6% 34%,#fff,transparent),
+    radial-gradient(1px 1px at 65% 32%,#fff,transparent),radial-gradient(1px 1px at 34% 36%,#fff,transparent);
+  -webkit-mask-image:linear-gradient(to bottom,#000 30%,transparent);mask-image:linear-gradient(to bottom,#000 30%,transparent);
+  animation:zlTwinkle 3.4s ease-in-out infinite}
+@keyframes zlTwinkle{0%,100%{opacity:.9}50%{opacity:.45}}
+
+.zl-sun{position:absolute;left:50%;top:60%;width:min(46vw,420px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,#fffbe0 0 22%,#ffe28a 38%,rgba(255,200,90,.55) 58%,rgba(255,170,70,0) 72%);
+  animation:zlSunRise 2.4s cubic-bezier(.2,.8,.2,1) both,zlSunPulse 4s ease-in-out 2.4s infinite}
+@keyframes zlSunRise{from{top:78%;opacity:0}to{top:60%;opacity:1}}
+@keyframes zlSunPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+.zl-rays{position:absolute;left:50%;top:60%;width:170vmax;height:170vmax;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg,rgba(255,230,150,.16) 0 4deg,transparent 4deg 14deg);
+  -webkit-mask-image:radial-gradient(circle,#000 0,transparent 38%);mask-image:radial-gradient(circle,#000 0,transparent 38%);
+  animation:zlRays 50s linear infinite}
+@keyframes zlRays{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.zl-cloud{position:absolute;height:7%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,236,214,.55),rgba(255,200,170,0) 70%);filter:blur(3px)}
+.zl-cloud.c1{left:-20%;top:30%;width:42%;animation:zlCloud 38s linear infinite}
+.zl-cloud.c2{left:-30%;top:42%;width:55%;animation:zlCloud 52s linear -20s infinite;opacity:.8}
+.zl-cloud.c3{left:-25%;top:22%;width:34%;animation:zlCloud 44s linear -8s infinite;opacity:.6}
+@keyframes zlCloud{to{transform:translateX(170vw)}}
+
+/* Castillo lejano (silueta genérica con torres) */
+.zl-castle{position:absolute;left:68%;bottom:36%;width:min(15vw,150px);height:min(15vw,150px);min-width:84px;min-height:84px;filter:drop-shadow(0 0 10px rgba(255,214,140,.3))}
+.zl-castle i{position:absolute;background:#31456e;display:block}
+.zl-castle .keep{left:26%;right:26%;bottom:0;height:46%;background:linear-gradient(to bottom,#3a5080,#2a3b61)}
+.zl-castle .tw{bottom:0;width:20%;background:linear-gradient(to bottom,#3a5080,#2a3b61)}
+.zl-castle .tw:before{content:"";position:absolute;left:-14%;right:-14%;bottom:100%;height:70%;background:#243357;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.zl-castle .tw1{left:6%;height:58%}
+.zl-castle .tw2{left:40%;height:92%}
+.zl-castle .tw3{right:6%;height:62%}
+.zl-castle .tw2:after{content:"";position:absolute;left:38%;top:16%;width:24%;height:12%;background:#ffd98a;box-shadow:0 0 6px #ffd98a}
+
+/* Colinas en capas con perspectiva atmosférica */
+.zl-hill{position:absolute;left:-12%;right:-12%;border-radius:50% 50% 0 0/100% 100% 0 0}
+.zl-hill.h1{bottom:0;height:46%;background:linear-gradient(to bottom,#4e9a63,#2d6e48 55%,#235a3a);transform:scaleX(1.15) translateX(14%)}
+.zl-hill.h2{bottom:0;height:36%;background:linear-gradient(to bottom,#3c8a4f,#1f6238 60%,#174b2c);transform:translateX(-18%) scaleX(1.25)}
+.zl-hill.h3{bottom:-6%;height:24%;background:linear-gradient(to bottom,#2a7a3f,#134a28 55%,#0c331c);transform:translateX(10%) scaleX(1.3)}
+.zl-trees{position:absolute;left:0;right:0;bottom:0;height:14%;
+  background:
+    radial-gradient(circle at 50% 100%,#082614 0 62%,transparent 63%) 0 100%/88px 74px repeat-x,
+    radial-gradient(circle at 50% 100%,#0b3019 0 60%,transparent 61%) 44px 100%/110px 56px repeat-x}
+.zl-mist{position:absolute;left:-10%;right:-10%;bottom:14%;height:20%;background:linear-gradient(to top,rgba(220,255,230,0),rgba(220,255,235,.2),rgba(220,255,230,0));filter:blur(6px);animation:zlMist 14s ease-in-out infinite alternate}
+@keyframes zlMist{from{transform:translateX(-3%)}to{transform:translateX(3%)}}
+.zl-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(2,10,18,.6) 100%)}
+
+/* Texto: oro grabado con marco ornamental */
+html.tema-zelda .capa-bienvenida .bloque-bienvenida{position:relative;z-index:4;margin-top:-6vh;padding:clamp(18px,3vw,30px) clamp(10px,3vw,40px)}
+html.tema-zelda .capa-bienvenida .bloque-bienvenida:before,
+html.tema-zelda .capa-bienvenida .bloque-bienvenida:after{
+  content:"\25C6";display:block;width:min(86vw,560px);text-align:center;color:#ffe28a;font-size:.95rem;line-height:1;
+  text-shadow:0 0 10px rgba(255,214,102,.8);
+  background:linear-gradient(90deg,transparent,#f2c94c) left center/calc(50% - 22px) 1px no-repeat,
+             linear-gradient(90deg,#f2c94c,transparent) right center/calc(50% - 22px) 1px no-repeat;
+  opacity:0}
+html.tema-zelda .capa-bienvenida.visible .bloque-bienvenida:before,
+html.tema-zelda .capa-bienvenida.visible .bloque-bienvenida:after{animation:zlOrn .9s ease .3s forwards}
+@keyframes zlOrn{from{opacity:0;transform:scaleX(.4)}to{opacity:1;transform:scaleX(1)}}
+html.tema-zelda .capa-bienvenida .texto-bienvenida{
+  font-family:var(--tipo-titulo);font-weight:900;letter-spacing:.04em;
+  background:linear-gradient(180deg,#fffbe0 0%,#ffe28a 42%,#e0a92f 72%,#a86f1c 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;
+  filter:drop-shadow(0 2px 0 #3b2408) drop-shadow(0 0 16px rgba(255,214,102,.55));
 }
-.retro-palm .palm-crown .leaf-1{transform:rotate(-78deg) scale(.86)}
-.retro-palm .palm-crown .leaf-2{transform:rotate(-60deg) scale(1)}
-.retro-palm .palm-crown .leaf-3{transform:rotate(-42deg) scale(1.06)}
-.retro-palm .palm-crown .leaf-4{transform:rotate(-22deg) scale(1.02)}
-.retro-palm .palm-crown .leaf-5{transform:rotate(2deg) scale(1.08)}
-.retro-palm .palm-crown .leaf-6{transform:rotate(25deg) scale(1.03)}
-.retro-palm .palm-crown .leaf-7{transform:rotate(45deg) scale(.98)}
-.retro-palm .palm-crown .leaf-8{transform:rotate(64deg) scale(.9)}
-.retro-palm .palm-crown .leaf-9{transform:rotate(88deg) scale(.72)}
-.retro-palm .palm-crown .leaf-3:after,
-.retro-palm .palm-crown .leaf-5:after,
-.retro-palm .palm-crown .leaf-7:after{
-  content:"";position:absolute;left:18%;top:48%;width:62%;height:1px;
-  background:rgba(255,255,255,.25);box-shadow:0 0 3px currentColor;
-  transform:rotate(-2deg);opacity:.7;
-}
+html.tema-zelda .capa-bienvenida.visible .texto-bienvenida{
+  animation:entradaBienvenida .9s cubic-bezier(.2,.9,.3,1.4) forwards,zlLatido 2.8s ease-in-out .9s infinite}
+@keyframes zlLatido{
+  0%,100%{filter:drop-shadow(0 2px 0 #3b2408) drop-shadow(0 0 14px rgba(255,214,102,.45))}
+  50%{filter:drop-shadow(0 2px 0 #3b2408) drop-shadow(0 0 28px rgba(140,215,255,.7))}}
+html.tema-zelda .capa-bienvenida .eslogan-bienvenida{
+  font-family:var(--tipo-titulo);font-style:normal;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:#e6f6d8;text-shadow:0 1px 0 #0b2a17,0 0 12px rgba(120,220,140,.6)}
+html.tema-zelda .capa-bienvenida .pista-bienvenida{position:relative;z-index:4;color:rgba(255,241,200,.85);text-shadow:0 1px 4px rgba(0,0,0,.7)}
+
 @media (max-width:700px){
-  .retro-palm .palm-crown{width:112px;height:90px}
-  .retro-palm .palm-crown .leaf{width:59px;height:15px}
+  .zl-castle{left:52%;bottom:40%}
+  .zl-sun{width:62vw}
+  html.tema-zelda .capa-bienvenida .eslogan-bienvenida{letter-spacing:.14em}
+}
+@media (prefers-reduced-motion:reduce){
+  .zl-sun,.zl-rays,.zl-cloud,.zl-mist,.zl-stars,html.tema-zelda .producto[data-categoria~="ofertas"],html.tema-zelda .producto[data-categoria~="ofertas"] .precio,
+  html.tema-zelda .capa-bienvenida .bloque-bienvenida:before,html.tema-zelda .capa-bienvenida .bloque-bienvenida:after{animation:none!important}
+  html.tema-zelda .capa-bienvenida .bloque-bienvenida:before,html.tema-zelda .capa-bienvenida .bloque-bienvenida:after{opacity:1}
+  html.tema-zelda .capa-bienvenida.visible .texto-bienvenida{animation:none;opacity:1;transform:none}
+}
+
+
+/* ============================================================
+   TEMA VICE CITY · inspirado en la estética de GTA VI
+   Neón rosa, atardecer naranja, palmeras y noche de Miami.
+   ============================================================ */
+html.tema-vice{
+  --fondo:#07020c;--panel:rgba(16,5,24,.84);--borde:#ffd1e8;--texto-suave:#ecc9dc;
+  --cyan:#ff4fa3;--azul:#d6247a;
+  --tipo-neon:'Yellowtail','Brush Script MT',cursive;
+}
+html.tema-vice body{background-image:linear-gradient(rgba(14,2,22,.72),rgba(8,1,14,.8)),var(--fondo-img)}
+/* Líneas de cancha / círculos tenues al fondo, como en el arte de referencia */
+html.tema-vice body:before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 0% 52%,transparent 0 30vmax,rgba(255,70,165,.34) 30vmax calc(30vmax + 1.5px),transparent calc(30vmax + 2px)),
+    radial-gradient(circle at 100% 52%,transparent 0 34vmax,rgba(255,70,165,.34) 34vmax calc(34vmax + 1.5px),transparent calc(34vmax + 2px)),
+    radial-gradient(circle at 100% 52%,transparent 0 16vmax,rgba(255,70,165,.22) 16vmax calc(16vmax + 1.5px),transparent calc(16vmax + 2px)),
+    radial-gradient(ellipse at 0% 0%,rgba(255,46,136,.28),transparent 45%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,110,60,.2),transparent 45%);
+}
+html.tema-vice .encabezado{border-bottom-color:rgba(255,46,136,.7)}
+html.tema-vice .linea-rgb{background:linear-gradient(90deg,#ff2e88,#ff8a3d,#ffd166,#2ee6d6,#ff2e88)}
+html.tema-vice .titulos h1{
+  font-family:var(--tipo-neon);font-weight:400;letter-spacing:.02em;font-size:clamp(2rem,6.6vw,3.9rem);line-height:1.05;
+  color:#ffeaf5;text-shadow:0 0 3px #fff,0 0 9px #ff9ad0,0 0 20px #ff2e88,0 0 38px #ff2e88;
+  animation:viceHumSitio 3.6s ease-in-out infinite}
+@keyframes viceHumSitio{0%,100%{text-shadow:0 0 3px #fff,0 0 9px #ff9ad0,0 0 20px #ff2e88,0 0 38px #ff2e88}50%{text-shadow:0 0 3px #fff,0 0 12px #ffb3d9,0 0 26px #ff2e88,0 0 52px #ff5a2e}}
+html.tema-vice .producto{border-color:rgba(255,160,205,.5)}
+html.tema-vice .producto:hover{box-shadow:0 0 24px rgba(255,46,136,.4)}
+html.tema-vice .producto[data-categoria~="ofertas"]{border-color:#ff2e88;box-shadow:0 0 0 1px rgba(255,46,136,.22),0 0 24px rgba(255,138,61,.18);animation:brillo-marco-vice 2.8s ease-in-out infinite}
+html.tema-vice .producto[data-categoria~="ofertas"] .precio{border-color:#ff8a3d;background:linear-gradient(110deg,#ff2e88,#ffd166,#fff,#ff8a3d,#ff2e88);background-size:260% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo-tema-oferta 2.6s linear infinite}
+@keyframes brillo-marco-vice{0%,100%{border-color:#ff2e88}50%{border-color:#ff8a3d;box-shadow:0 0 0 1px rgba(255,138,61,.25),0 0 30px rgba(255,46,136,.3)}}
+html.tema-vice .categorias,html.tema-vice .buscador input{border-color:rgba(255,46,136,.45)}
+html.tema-vice .categorias button.activa{background:rgba(255,46,136,.22);box-shadow:0 0 14px rgba(255,46,136,.5)}
+html.tema-vice .categorias button:hover{background:rgba(255,46,136,.16);box-shadow:0 0 16px 2px rgba(255,46,136,.5)}
+.admin-theme-swatch.vice{background:linear-gradient(90deg,#0a020f,#ff2e88,#ff8a3d,#2ee6d6)}
+
+/* ---------- Intro: atardecer neón sobre Vice City ---------- */
+.vice-stage{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .5s ease}
+html.tema-vice .capa-bienvenida.visible .vice-stage{opacity:1}
+html.tema-vice .capa-bienvenida{background:#07020c;backdrop-filter:none}
+html.tema-vice .capa-bienvenida canvas{z-index:3}
+.vc-sky{position:absolute;inset:0;background:linear-gradient(to bottom,#06010d 0%,#1a0630 30%,#5b0f55 52%,#d12a78 70%,#ff7a45 82%,#ffc067 88%)}
+.vc-haze{position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(40px);opacity:.55}
+.vc-haze.h1{left:-30vmax;top:-30vmax;background:radial-gradient(circle,rgba(255,46,136,.65),transparent 65%);animation:vcDrift 9s ease-in-out infinite alternate}
+.vc-haze.h2{right:-28vmax;top:20%;background:radial-gradient(circle,rgba(150,40,255,.5),transparent 65%);animation:vcDrift 12s ease-in-out -4s infinite alternate}
+@keyframes vcDrift{from{transform:translate(0,0)}to{transform:translate(4vmax,3vmax)}}
+.vc-rings{position:absolute;left:50%;top:60%;width:0;height:0}
+.vc-rings:before{content:"";position:absolute;left:0;top:-60vh;width:1px;height:100vh;background:linear-gradient(to bottom,transparent,rgba(255,120,190,.35) 30%,rgba(255,120,190,.35) 60%,transparent)}
+.vc-rings i{position:absolute;left:0;top:0;border:1.5px solid rgba(255,110,185,.42);border-radius:50%;transform:translate(-50%,-50%);animation:vcRing 5s ease-in-out infinite}
+.vc-rings i:nth-child(1){width:38vmin;height:38vmin}
+.vc-rings i:nth-child(2){width:68vmin;height:68vmin;animation-delay:-1.6s}
+.vc-rings i:nth-child(3){width:104vmin;height:104vmin;animation-delay:-3.2s;border-color:rgba(255,110,185,.28)}
+@keyframes vcRing{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.035)}}
+.vc-sun{position:absolute;left:50%;top:62%;width:min(40vw,340px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:linear-gradient(to bottom,#fff3a0 0%,#ffc247 30%,#ff7a45 62%,#ff2e88 100%);
+  box-shadow:0 0 60px 20px rgba(255,100,90,.55),0 0 160px 60px rgba(255,46,136,.35);
+  animation:vcSun 2.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes vcSun{from{top:82%;opacity:0}to{top:62%;opacity:1}}
+.vc-skyline{position:absolute;left:0;right:0;bottom:11%;height:30%;filter:drop-shadow(0 -2px 7px rgba(255,46,136,.6))}
+.vc-skyline:before{content:"";position:absolute;inset:0;
+  background:radial-gradient(circle,rgba(255,190,130,.7) 0 1px,transparent 1.6px) 3px 4px/13px 17px,linear-gradient(#150320,#0a0113);
+  clip-path:polygon(0% 100%,0% 62%,3.6% 62%,3.6% 72%,5.8% 72%,5.8% 20%,8.0% 20%,8.0% 48%,13.2% 48%,13.2% 55%,17.6% 55%,17.6% 40%,19.8% 40%,19.8% 72%,25.0% 72%,25.0% 82%,30.2% 82%,30.2% 82%,34.6% 82%,34.6% 40%,36.8% 40%,36.8% 55%,40.4% 55%,40.4% 34%,42.6% 34%,42.6% 72%,45.6% 72%,45.6% 20%,48.6% 20%,48.6% 82%,50.8% 82%,50.8% 40%,55.2% 40%,55.2% 67%,58.8% 67%,58.8% 20%,63.2% 20%,63.2% 48%,66.2% 48%,66.2% 40%,69.8% 40%,69.8% 67%,73.4% 67%,73.4% 72%,75.6% 72%,75.6% 20%,78.6% 20%,78.6% 55%,83.0% 55%,83.0% 40%,85.2% 40%,85.2% 20%,88.8% 20%,88.8% 67%,94.0% 67%,94.0% 72%,98.4% 72%,98.4% 67%,100% 67%,100% 100%)}
+.vc-sea{position:absolute;left:0;right:0;bottom:0;height:12%;background:linear-gradient(#1b0630,#05010a);overflow:hidden}
+.vc-sea:before{content:"";position:absolute;left:50%;top:0;width:34%;height:100%;transform:translateX(-50%);
+  background:repeating-linear-gradient(to bottom,rgba(255,150,110,.75) 0 2px,transparent 2px 7px);
+  -webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent);
+  animation:vcShimmer 2.4s linear infinite}
+@keyframes vcShimmer{to{background-position:0 7px}}
+/* Palmeras en silueta con luz rosa de borde */
+.vc-palm{position:absolute;bottom:8%;width:min(34vw,200px);height:min(60vh,420px);filter:drop-shadow(0 0 6px rgba(255,46,136,.7))}
+.vc-palm .trunk{position:absolute;left:50%;bottom:0;width:9px;height:88%;transform:translateX(-50%);background:#08010f;clip-path:polygon(30% 0,70% 0,100% 100%,0 100%)}
+.vc-palm .crown{position:absolute;left:50%;top:12%;width:0;height:0}
+.vc-palm .crown i{position:absolute;left:0;top:0;width:clamp(70px,13vw,120px);height:20px;background:#08010f;transform-origin:0 50%;
+  clip-path:polygon(0 50%,15% 20%,60% 0,100% 50%,60% 100%,15% 80%)}
+.vc-palm .crown i:nth-child(1){transform:rotate(-168deg)}
+.vc-palm .crown i:nth-child(2){transform:rotate(-142deg) scale(1.1)}
+.vc-palm .crown i:nth-child(3){transform:rotate(-116deg) scale(1.05)}
+.vc-palm .crown i:nth-child(4){transform:rotate(-90deg) scale(.95)}
+.vc-palm .crown i:nth-child(5){transform:rotate(-64deg) scale(1.05)}
+.vc-palm .crown i:nth-child(6){transform:rotate(-38deg) scale(1.1)}
+.vc-palm .crown i:nth-child(7){transform:rotate(-12deg)}
+.vc-palm .crown i:nth-child(8){transform:rotate(22deg) scale(.9)}
+.vc-palm .crown i:nth-child(9){transform:rotate(158deg) scale(.9)}
+.vc-palm.p1{left:-3%;transform:rotate(-5deg);transform-origin:bottom}
+.vc-palm.p2{left:11%;height:min(40vh,290px);width:min(24vw,150px);opacity:.9}
+.vc-palm.p3{right:-3%;transform:rotate(5deg);transform-origin:bottom}
+.vc-palm.p4{right:12%;height:min(42vh,300px);width:min(24vw,150px);opacity:.9}
+.vc-grain{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(3,0,8,.65) 100%)}
+
+/* Texto: letrero de neón rosa */
+html.tema-vice .capa-bienvenida .bloque-bienvenida{position:relative;z-index:4;margin-top:-10vh;gap:clamp(4px,1vw,10px)}
+html.tema-vice .capa-bienvenida .texto-bienvenida{
+  font-family:var(--tipo-neon);font-weight:400;letter-spacing:.01em;line-height:1.05;
+  font-size:clamp(2.3rem,8vw,5.6rem);color:#ffeaf5;
+  text-shadow:0 0 3px #fff,0 0 10px #ff9ad0,0 0 22px #ff2e88,0 0 44px #ff2e88,0 0 80px #d4146a;
+  transform-origin:center}
+html.tema-vice .capa-bienvenida.visible .texto-bienvenida{
+  animation:viceOn 1.5s linear forwards,viceHum 3.2s ease-in-out 1.5s infinite}
+@keyframes viceOn{
+  0%{opacity:0;transform:rotate(-3deg) scale(.97)}8%{opacity:.9}12%{opacity:.1}20%{opacity:1}26%{opacity:.25}34%{opacity:.8}40%{opacity:.4}55%,100%{opacity:1;transform:rotate(-3deg) scale(1)}}
+@keyframes viceHum{
+  0%,100%{text-shadow:0 0 3px #fff,0 0 10px #ff9ad0,0 0 22px #ff2e88,0 0 44px #ff2e88,0 0 80px #d4146a}
+  50%{text-shadow:0 0 3px #fff,0 0 14px #ffb3d9,0 0 30px #ff2e88,0 0 58px #ff5a2e,0 0 100px #ff2e88}}
+html.tema-vice .capa-bienvenida .bloque-bienvenida:after{
+  content:"";display:block;width:min(74vw,600px);height:6px;border-radius:50%;transform:rotate(-3deg);margin-top:-.2em;
+  background:linear-gradient(90deg,transparent,#ff9ad0 10%,#fff 50%,#ff9ad0 90%,transparent);
+  box-shadow:0 0 8px #ff2e88,0 0 22px #ff2e88;opacity:0}
+html.tema-vice .capa-bienvenida.visible .bloque-bienvenida:after{animation:vcLine .8s ease 1s forwards}
+@keyframes vcLine{from{opacity:0;transform:rotate(-3deg) scaleX(.2)}to{opacity:1;transform:rotate(-3deg) scaleX(1)}}
+html.tema-vice .capa-bienvenida .eslogan-bienvenida{
+  font-family:var(--tipo-texto);font-style:normal;font-weight:700;text-transform:uppercase;letter-spacing:.42em;margin-top:6px;
+  font-size:clamp(.7rem,1.8vw,1.1rem);color:#fff;text-shadow:0 0 10px rgba(255,46,136,.8)}
+html.tema-vice .capa-bienvenida .pista-bienvenida{position:relative;z-index:4;color:rgba(255,220,238,.85);text-shadow:0 1px 6px rgba(0,0,0,.8)}
+
+@media (max-width:700px){
+  .vc-sun{width:58vw}
+  .vc-palm.p2,.vc-palm.p4{display:none}
+  html.tema-vice .capa-bienvenida .eslogan-bienvenida{letter-spacing:.22em}
+}
+@media (prefers-reduced-motion:reduce){
+  .vc-haze,.vc-rings i,.vc-sun,.vc-sea:before,html.tema-vice .titulos h1,html.tema-vice .producto[data-categoria~="ofertas"],html.tema-vice .producto[data-categoria~="ofertas"] .precio{animation:none!important}
+  html.tema-vice .capa-bienvenida.visible .texto-bienvenida{animation:none;opacity:1;transform:rotate(-3deg)}
+  html.tema-vice .capa-bienvenida .bloque-bienvenida:after{opacity:1}
 }
